@@ -1,0 +1,12 @@
+spring:
+  profiles:
+    active: dev
+server:
+  port: 9080
+  servlet:
+    context-path: /
+
+
+zookeeper:
+  address: 81.69.254.72:2181
+  timeout: 200000
