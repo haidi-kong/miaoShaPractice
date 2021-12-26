@@ -1,7 +1,7 @@
 ## 项目声明
 基于https://hub.fastgit.org/qiurunze123/aircrafttravel该项目的练习项目，自己搭建在线环境，用来学习代码。
 ## 项目代码逻辑
-![Image text](http://localhost:1080/jim/seckillpractice/-/tree/develop/miaosha1/jpg/秒杀流程.jpg)
+![Image text](https://raw.fastgit.org/luozijing/miaoShaPractice/main/miaosha1/jpg/%E7%A7%92%E6%9D%80%E6%B5%81%E7%A8%8B.jpg)
 ## 搭建项目环境
 
 ### docker 
@@ -88,7 +88,7 @@ docker exec -it redis redis-cli -a "luozijing@2021" #进入redis
 
 ## 启动项目
 进行账号注册（随便注册体验），和体验秒杀功能，项目体验地址
-![Image text](http://localhost:1080/jim/seckillpractice/-/tree/develop/miaosha1/jpg/线上截图.PNG)
+![Image text](https://raw.fastgit.org/luozijing/miaoShaPractice/main/miaosha1/jpg/%E7%BA%BF%E4%B8%8A%E6%88%AA%E5%9B%BE.PNG)
 
 
 
