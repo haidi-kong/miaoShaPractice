@@ -2,7 +2,7 @@ spring:
   datasource:
     username: root
     password: root
-    url: jdbc:mysql://81.69.254.72:3306/miaosha1?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    url: jdbc:mysql://mydb:3306/miaosha1?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
   thymeleaf:
@@ -20,7 +20,7 @@ spring:
     database: 0
     timeout: 0
     port: 26379
-    host: 81.69.254.72
+    host: myredis
     password: luozijing@2021
     jedis:
       pool:
@@ -28,7 +28,7 @@ spring:
         max-idle: 8
         max-wait: -1
   rabbitmq:
-    host: 81.69.254.72
+    host: myrabbitmq
     password: guest
     username: guest
     listener:
@@ -49,10 +49,10 @@ mybatis:
 pageCache:
   enable: true
 logging:
+  file: /var/logs
   level:
     com.cet.diagsyscloud.system.dao: DEBUG
-    #root: DEBUG
 
 zookeeper:
-  address: 81.69.254.72:2181
+  address: myzookeeper:2181
   timeout: 200000

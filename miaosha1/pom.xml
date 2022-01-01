@@ -228,24 +228,24 @@
             </plugin>
 
 
-                <plugin>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-maven-plugin</artifactId>
-                    <configuration>
-                        <!-- 指定该Main Class为全局的唯一入口 -->
-                        <mainClass>com.travel.web.AirCraftApplication</mainClass>
-                        <layout>ZIP</layout>
-                        <fork>true</fork>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>repackage</goal><!--可以把依赖的包都打包到生成的Jar包中-->
-                            </goals>
-                        </execution>
-                    </executions>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!-- 指定该Main Class为全局的唯一入口 -->
+                    <mainClass>com.travel.web.AirCraftApplication</mainClass>
+                    <layout>ZIP</layout>
+                    <fork>true</fork>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal><!--可以把依赖的包都打包到生成的Jar包中-->
+                        </goals>
+                    </execution>
+                </executions>
 
-                </plugin>
+            </plugin>
         </plugins>
 
     </build>
