@@ -17,7 +17,7 @@ docker run -p 3306:3306 --name mysql \
 -v /mydata/mysql/mysql-files:/var/lib/mysql-files \
 -e MYSQL_ROOT_PASSWORD=root  \
 -d mysql:8.0 #启动容器，默认没密码
-docker exec -it mysql mysql -u root -p'root' #连接mysql
+docker exec -it mysql mysql -u root -p'' #连接mysql
 docker exec -it mysql /bin/bash  #启动mysql
 ```
 
@@ -83,11 +83,11 @@ docker run -itd \
 -v /mydata/redis/data:/data \
 -d redis redis-server /data/redis.conf --appendonly yes --requirepass "luozijing@2021"
 docker exec -it redis /bin/bash  #启动redis
-docker exec -it redis redis-cli -a "luozijing@2021" #进入redis
+docker exec -it redis redis-cli -a "" #进入redis
 ```
 
 ## 启动项目
-进行账号注册（随便注册体验），和体验秒杀功能，项目体验地址
+进行账号注册（随便注册体验），和体验秒杀功能，项目体验地址http://81.69.254.72:9080/login/to_login
 ![Image text](https://raw.fastgit.org/luozijing/miaoShaPractice/main/miaosha1/jpg/%E7%BA%BF%E4%B8%8A%E6%88%AA%E5%9B%BE.PNG)
 
 
