@@ -16,7 +16,7 @@
     <properties>
         <java.version>1.8</java.version>
         <jackson.version>2.9.6</jackson.version>
-        <docker.host>http://81.69.254.72:2275</docker.host>
+        <docker.host>http://42.192.183.193:2375</docker.host>
         <docker.maven.plugin.version>1.2.2</docker.maven.plugin.version>
     </properties>
 
