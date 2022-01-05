@@ -3,6 +3,7 @@ services:
   miaosha1:
     image: miaosha1/web:0.0.1-SNAPSHOT
     container_name: miaosha1
+    restart: always
     ports:
       - 9080:8080
     volumes:
