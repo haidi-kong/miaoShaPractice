@@ -1,0 +1,18 @@
+version: '3.3'
+services:
+  miaosha1:
+    image: miaosha1/web:0.0.1-SNAPSHOT
+    container_name: miaosha1
+    restart: always
+    ports:
+      - 9080:8080
+    volumes:
+      - /mydata/app/miaosha/logs:/var/logs
+      - /etc/localtime:/etc/localtime
+    environment:
+      - 'TZ="Asia/Shanghai"'
+    external_links:
+      - mysql:mydb #可以用redis这个域名访问redis服务
+      - redis:myredis #可以用mongo这个域名访问mongo服务
+      - zookeeper:myzookeeper #可以用db这个域名访问mysql服务
+      - rabbitmq:myrabbitmq #可以用rabbit这个域名访问rabbitmq服务

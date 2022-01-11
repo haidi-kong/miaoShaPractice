@@ -1,0 +1,46 @@
+version: '3.3'
+services:
+  mysql:
+    image: mysql
+    container_name: mysql
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root #设置root帐号密码
+    ports:
+      - 3306:3306
+    volumes:
+      - /mydata/mysql/data/db:/var/lib/mysql #数据文件挂载
+      - /mydata/mysql/data/conf:/etc/mysql/conf.d #配置文件挂载
+      - /mydata/mysql/log:/var/log/mysql #日志文件挂载
+      - /mydata/mysql/mysql-files:/var/lib/mysql-files #其他文件
+  redis:
+    image: redis:latest
+    container_name: redis
+    command: redis-server /data/redis.conf --appendonly yes
+    restart: always
+    volumes:
+      - /mydata/redis/data:/data #数据文件挂载
+    ports:
+      - 26379:26379
+  rabbitmq:
+    image: rabbitmq:3.7.15-management
+    container_name: rabbitmq
+    restart: always
+    volumes:
+      - /mydata/rabbitmq/data:/var/lib/rabbitmq #数据文件挂载
+      - /mydata/rabbitmq/log:/var/log/rabbitmq #日志文件挂载
+    ports:
+      - 5672:5672
+      - 15672:15672
+  zookeeper:
+    image: zookeeper:3.4.14
+    container_name: zookeeper
+    restart: always
+    volumes:
+      - /mydata/zookeeper/data/:/data/ #数据文件挂载
+      - /mydata/zookeeper/log:/log/ #日志文件挂载
+    ports:
+      - 2181:2181
+      - 3888:3888
+      - 2888:2888
