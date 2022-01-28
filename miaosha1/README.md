@@ -92,3 +92,12 @@ docker exec -it redis redis-cli -a "" #进入redis
 
 
 
+
+https://github.com/macrozheng/mall-swarm/blob/master/mall-common/src/main/java/com/macro/mall/common/config/BaseRedisConfig.java
+https://github.com/bigcoder84/simple-tcc-transaction-demo/blob/master/tcc-transaction-order-web/pom.xml
+https://hub.fastgit.org/changmingxie/tcc-transaction/tree/master-1.7.x
+https://hub.fastgit.org/changmingxie/tcc-transaction/wiki/2-%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B
+https://github.com/qiurunze123/miaosha
+https://github.com/changmingxie/tcc-transaction/wiki/2-%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B
+https://hub.fastgit.org/DMinerJackie/tcc-transaction/blob/master-1.2.x/tcc-transaction-tutorial-sample/tcc-transaction-sample-domain/tcc-transaction-sample-captial/src/main/resources/config/spring/local/appcontext-service-datasource.xml
+https://hub.fastgit.org/qiurunze123/miaosha
