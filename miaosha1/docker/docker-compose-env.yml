@@ -44,3 +44,16 @@ services:
       - 2181:2181
       - 3888:3888
       - 2888:2888
+  nacos:
+    image: nacos/nacos-server:2.0.3
+    container_name: nacos-standalone
+    restart: always
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - MODE=standalone
+    volumes:
+      - /mydata/nacos/logs:/home/nacos/logs
+      - /mydata/nacos/init.d/custom.properties:/home/nacos/init.d/custom.properties
+    ports:
+      - "8848:8848"
+      - "9848:9848"

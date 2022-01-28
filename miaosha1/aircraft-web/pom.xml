@@ -149,7 +149,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <!-- 指定该Main Class为全局的唯一入口 -->
-                    <mainClass>com.travel.web.AirCraftApplication</mainClass>
+                    <mainClass>com.travel.api.web.AirCraftApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>

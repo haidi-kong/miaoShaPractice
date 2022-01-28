@@ -1,5 +1,10 @@
 ## 项目声明
 基于https://hub.fastgit.org/qiurunze123/aircrafttravel该项目的练习项目，自己搭建在线环境，用来学习代码。
+
+云环境地址：http://42.192.183.193:9080/login/to_login
+
+进行账号注册（随便注册体验）体验秒杀功能
+
 ## 项目代码逻辑
 ![Image text](https://raw.fastgit.org/luozijing/miaoShaPractice/main/miaosha1/jpg/%E7%A7%92%E6%9D%80%E6%B5%81%E7%A8%8B.jpg)
 ## 云环境docker搭建
