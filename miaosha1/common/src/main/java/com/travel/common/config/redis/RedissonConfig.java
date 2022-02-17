@@ -4,7 +4,7 @@ package com.travel.common.config.redis;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author 邱润泽 bullock
+ * @author luo
  */
 @Configuration
 public class RedissonConfig {

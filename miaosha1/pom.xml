@@ -12,7 +12,8 @@
     <modules>
         <module>order</module>
         <module>common</module>
-        <module>user</module>
+        <module>admin</module>
+        <module>users</module>
     </modules>
 
     <properties>
@@ -26,7 +27,7 @@
         <security-oauth2.version>2.3.3.RELEASE</security-oauth2.version>
         <redis.version>2.1.3.RELEASE</redis.version>
         <validation.version>2.1.6.RELEASE</validation.version>
-        <jackson.version>2.9.6</jackson.version>
+        <jackson.version>2.10.1</jackson.version>
         <thremf.version>2.1.1.RELEASE</thremf.version>
         <alibaba.version>1.2.58</alibaba.version>
         <redis.data.version>2.0.1.RELEASE</redis.data.version>
@@ -69,8 +70,6 @@
             <version>${mq.version}</version>
         </dependency>
 
-
-
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-framework</artifactId>
@@ -102,11 +101,11 @@
             <version>${jedis.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-pool2</artifactId>
-            <version>${pools.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.commons</groupId>-->
+<!--            <artifactId>commons-pool2</artifactId>-->
+<!--            <version>${pools.version}</version>-->
+<!--        </dependency>-->
 
 <!--        <dependency>-->
 <!--            <groupId>org.redisson</groupId>-->
@@ -183,7 +182,25 @@
             <version>${spring-boot.version}</version>
         </dependency>
 
+    </dependencies>
 
+    </dependencyManagement>
+
+    <!--公共包-->
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.32</version>
+        </dependency>
         <dependency>
             <groupId>org.mengyun</groupId>
             <artifactId>tcc-transaction-dubbo</artifactId>
@@ -209,22 +226,6 @@
             <groupId>com.alibaba.nacos</groupId>
             <artifactId>nacos-client</artifactId>
             <version>${nacos.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-            <version>${jedis.version}</version>
-        </dependency>
-
-    </dependencies>
-
-    </dependencyManagement>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
         </dependency>
 
     </dependencies>

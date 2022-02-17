@@ -4,21 +4,21 @@ package com.travel.order.providers.config.rabbitMq;
 import com.travel.common.config.redis.RedisServiceImpl;
 import com.travel.common.config.zk.ZkApi;
 import com.travel.common.enums.CustomerConstant;
-import com.travel.common.enums.ProductSoutOutMap;
+import com.travel.order.providers.utils.ProductSoutOutMap;
 import com.travel.common.enums.ResultStatus;
 import com.travel.common.resultbean.ResultGeekQ;
 import com.travel.common.utils.CommonMethod;
 import com.travel.order.apis.entity.GoodsVo;
-import com.travel.order.apis.entity.MiaoShaUserVo;
 import com.travel.order.apis.entity.OrderInfoVo;
 import com.travel.order.apis.service.MiaoshaService;
 import com.travel.order.providers.Exception.MqOrderException;
 import com.travel.order.providers.config.redis.keysbean.GoodsKey;
 import com.travel.order.providers.entity.miaosha.MiaoShaMessage;
 import com.travel.order.providers.entity.miaosha.MiaoShaOrder;
-import com.travel.order.providers.entity.miaosha.MiaoShaUser;
 import com.travel.order.providers.logic.GoodsLogic;
 import com.travel.order.providers.logic.MiaoShaLogic;
+import com.travel.users.apis.entity.MiaoShaUser;
+import com.travel.users.apis.entity.MiaoShaUserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.BeanUtils;
@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * @author 邱润泽 bullock
+ * @author luo
  */
 @Service
 @Slf4j

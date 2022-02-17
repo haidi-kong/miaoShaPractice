@@ -9,7 +9,7 @@ import redis.clients.jedis.JedisPool;
 import com.alibaba.fastjson.JSON;
 
 /**
- * @auther 邱润泽 bullock
+ * @auther luo
  * @date 2019/11/10
  */
 @Slf4j

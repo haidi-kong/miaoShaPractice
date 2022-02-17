@@ -3,7 +3,7 @@ package com.travel.common.utils;
 import java.util.UUID;
 
 /**
- * @auther 邱润泽 bullock
+ * @auther luo
  * @date 2019/11/10
  */
 public class UUIDUtil {

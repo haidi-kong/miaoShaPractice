@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.travel.order.provider.mapper.OrderInfoDao" >
-  <resultMap id="BaseResultMap" type="com.travel.api.function.entity.OrderInfo" >
+<mapper namespace="com.travel.order.providers.mapper.OrderInfoDao" >
+  <resultMap id="BaseResultMap" type="com.travel.order.providers.entity.OrderInfo" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="user_id" property="userId" jdbcType="BIGINT" />
     <result column="goods_id" property="goodsId" jdbcType="BIGINT" />
@@ -28,7 +28,7 @@
     delete from order_info
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.travel.api.function.entity.OrderInfo" >
+  <insert id="insert" parameterType="com.travel.order.providers.entity.OrderInfo" >
     insert into order_info (id, user_id, goods_id, 
       delivery_addr_id, goods_name, goods_count, 
       goods_price, order_channel, status, 
@@ -38,7 +38,7 @@
       #{goodsPrice,jdbcType=DECIMAL}, #{orderChannel,jdbcType=TINYINT}, #{status,jdbcType=TINYINT}, 
       #{createDate,jdbcType=TIMESTAMP}, #{payDate,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.travel.api.function.entity.OrderInfo" useGeneratedKeys="true" keyProperty="id" >
+  <insert id="insertSelective" parameterType="com.travel.order.providers.entity.OrderInfo" useGeneratedKeys="true" keyProperty="id" >
     insert into order_info
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -111,7 +111,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.travel.api.function.entity.OrderInfo" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.travel.order.providers.entity.OrderInfo" >
     update order_info
     <set >
       <if test="userId != null" >
@@ -147,7 +147,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.travel.api.function.entity.OrderInfo" >
+  <update id="updateByPrimaryKey" parameterType="com.travel.order.providers.entity.OrderInfo" >
     update order_info
     set user_id = #{userId,jdbcType=BIGINT},
       goods_id = #{goodsId,jdbcType=BIGINT},

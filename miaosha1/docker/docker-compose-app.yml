@@ -13,6 +13,7 @@ services:
       - 'TZ="Asia/Shanghai"'
     external_links:
       - mysql:mydb #可以用redis这个域名访问redis服务
-      - redis:myredis #可以用mongo这个域名访问mongo服务
+      - redis:myredis
       - zookeeper:myzookeeper #可以用db这个域名访问mysql服务
       - rabbitmq:myrabbitmq #可以用rabbit这个域名访问rabbitmq服务
+      - nacos-standalone:mynacos

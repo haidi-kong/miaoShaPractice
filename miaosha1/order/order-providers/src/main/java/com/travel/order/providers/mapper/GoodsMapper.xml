@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.travel.order.provider.mapper.GoodsMapper">
-  <resultMap id="BaseResultMap" type="com.travel.api.function.entity.Goods">
+<mapper namespace="com.travel.order.providers.mapper.GoodsMapper">
+  <resultMap id="BaseResultMap" type="com.travel.order.providers.entity.Goods">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
     <result column="goods_title" jdbcType="VARCHAR" property="goodsTitle" />
@@ -13,7 +13,7 @@
   <sql id="Base_Column_List">
     id, goods_name, goods_title, goods_img, goods_detail, goods_price, goods_stock
   </sql>
-  <insert id="insert" parameterType="com.travel.api.function.entity.Goods">
+  <insert id="insert" parameterType="com.travel.order.providers.entity.Goods">
     insert into goods (id, goods_name, goods_title, 
       goods_img, goods_detail, goods_price, 
       goods_stock)
@@ -21,7 +21,7 @@
       #{goodsImg,jdbcType=VARCHAR}, #{goodsDetail,jdbcType=VARCHAR}, #{goodsPrice,jdbcType=DECIMAL}, 
       #{goodsStock,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.travel.api.function.entity.Goods">
+  <insert id="insertSelective" parameterType="com.travel.order.providers.entity.Goods">
     insert into goods
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -70,7 +70,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.travel.api.function.entity.Goods">
+  <update id="updateByPrimaryKeySelective" parameterType="com.travel.order.providers.entity.Goods">
     update goods
     <set>
       <if test="goodsName != null">
@@ -94,7 +94,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.travel.api.function.entity.Goods">
+  <update id="updateByPrimaryKey" parameterType="com.travel.order.providers.entity.Goods">
     update goods
     set goods_name = #{goodsName,jdbcType=VARCHAR},
       goods_title = #{goodsTitle,jdbcType=VARCHAR},

@@ -6,7 +6,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import java.util.Random;
 
 /**
- * @auther 邱润泽 bullock
+ * @auther luo
  * @date 2019/11/9
  */
 public class MD5Util {

@@ -7,7 +7,7 @@ import lombok.Setter;
 import java.io.Serializable;
 
 /**
- * @auther 邱润泽 bullock
+ * @auther luo
  * @date 2019/11/8
  */
 @Getter

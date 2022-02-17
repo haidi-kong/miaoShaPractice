@@ -5,11 +5,11 @@ import com.travel.order.apis.entity.GoodsVo;
 import com.travel.order.providers.config.redis.keysbean.MiaoShaUserKey;
 import com.travel.order.providers.config.redis.keysbean.MiaoshaKey;
 import com.travel.order.providers.entity.miaosha.MiaoShaOrder;
-import com.travel.order.providers.entity.miaosha.MiaoShaUser;
 import com.travel.order.providers.entity.OrderInfo;
 import com.travel.order.providers.logic.MiaoShaLogic;
 import com.travel.order.providers.mapper.MiaoShaOrderDao;
 import com.travel.order.providers.mapper.OrderInfoDao;
+import com.travel.users.apis.entity.MiaoShaUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ import java.util.List;
 import static com.travel.common.enums.CustomerConstant.COOKIE_NAME_TOKEN;
 
 /**
- * @author 邱润泽 bullock
+ * @author luo
  */
 @Slf4j
 @Service
@@ -38,8 +38,8 @@ public class MiaoShaLogicImpl implements MiaoShaLogic {
     @Autowired
     private RedisServiceImpl redisClient;
 
-    @Autowired
-    private MiaoShaUserDao mUserDao;
+//    @Autowired
+//    private MiaoShaUserDao mUserDao;
 
     @Override
     public OrderInfo createOrder(MiaoShaUser user, GoodsVo goods) {
@@ -90,7 +90,8 @@ public class MiaoShaLogicImpl implements MiaoShaLogic {
     // todo 去掉user相关
     @Override
     public MiaoShaUser getById(Long id) {
-        return mUserDao.selectByPrimaryKey(id);
+        //return mUserDao.selectByPrimaryKey(id);
+        return new MiaoShaUser();
     }
 
     @Override

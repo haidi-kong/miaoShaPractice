@@ -3,7 +3,7 @@ package com.travel.common.utils;
 import com.travel.common.enums.CustomerConstant;
 
 /**
- * @author 邱润泽 bullock
+ * @author luo
  */
 public class CommonMethod {
 

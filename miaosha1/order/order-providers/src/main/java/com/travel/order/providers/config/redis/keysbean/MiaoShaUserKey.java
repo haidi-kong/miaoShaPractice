@@ -4,7 +4,7 @@ package com.travel.order.providers.config.redis.keysbean;
 import com.travel.common.config.redis.BasePrefix;
 
 /**
- * @auther 邱润泽 bullock
+ * @auther luo
  * @date 2019/11/10
  */
 public class MiaoShaUserKey extends BasePrefix {

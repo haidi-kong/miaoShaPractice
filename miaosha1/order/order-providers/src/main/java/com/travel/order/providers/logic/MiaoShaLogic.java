@@ -2,8 +2,8 @@ package com.travel.order.providers.logic;
 
 import com.travel.order.apis.entity.GoodsVo;
 import com.travel.order.providers.entity.miaosha.MiaoShaOrder;
-import com.travel.order.providers.entity.miaosha.MiaoShaUser;
 import com.travel.order.providers.entity.OrderInfo;
+import com.travel.users.apis.entity.MiaoShaUser;
 import org.springframework.stereotype.*;
 
 import javax.servlet.http.HttpServletResponse;

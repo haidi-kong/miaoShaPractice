@@ -1,6 +1,7 @@
 package com.travel.order.providers.entity.miaosha;
 
 
+import com.travel.users.apis.entity.MiaoShaUser;
 import lombok.Getter;
 import lombok.Setter;
 

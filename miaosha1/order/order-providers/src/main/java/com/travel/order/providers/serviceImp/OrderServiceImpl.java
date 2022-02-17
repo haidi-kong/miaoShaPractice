@@ -4,20 +4,22 @@ import com.travel.common.enums.ResultStatus;
 import com.travel.common.resultbean.ResultGeekQ;
 import com.travel.order.apis.entity.GoodsVo;
 import com.travel.order.apis.entity.MiaoShaOrderVo;
-import com.travel.order.apis.entity.MiaoShaUserVo;
 import com.travel.order.apis.entity.OrderInfoVo;
 import com.travel.order.apis.service.OrderService;
 import com.travel.order.providers.entity.miaosha.MiaoShaOrder;
-import com.travel.order.providers.entity.miaosha.MiaoShaUser;
 import com.travel.order.providers.entity.OrderInfo;
 import com.travel.order.providers.logic.MiaoShaLogic;
+import com.travel.users.apis.entity.MiaoShaUser;
+import com.travel.users.apis.entity.MiaoShaUserVo;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@DubboService(timeout = 900000, cluster = "failfast")
 public class OrderServiceImpl implements OrderService {
 
     @Autowired

@@ -2,7 +2,7 @@ package com.travel.order.providers.config.Zookeeper;
 
 import com.travel.common.config.zk.ZkApi;
 import com.travel.common.enums.Constants;
-import com.travel.common.enums.ProductSoutOutMap;
+import com.travel.order.providers.utils.ProductSoutOutMap;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;

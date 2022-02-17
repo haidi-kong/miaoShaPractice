@@ -3,8 +3,14 @@ package com.travel.order.apis.service;
 import com.travel.common.resultbean.ResultGeekQ;
 import com.travel.order.apis.entity.GoodsVo;
 import com.travel.order.apis.entity.MiaoShaOrderVo;
-import com.travel.order.apis.entity.MiaoShaUserVo;
 import com.travel.order.apis.entity.OrderInfoVo;
+import com.travel.users.apis.entity.MiaoShaUser;
+import com.travel.users.apis.entity.MiaoShaUserVo;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.awt.image.BufferedImage;
 
 public interface MiaoshaService {
     public ResultGeekQ<OrderInfoVo> miaosha(MiaoShaUserVo user, GoodsVo goods);
@@ -18,4 +24,12 @@ public interface MiaoshaService {
     public ResultGeekQ<Long> getMiaoshaResult(Long userId, Long goodsId);
 
     public ResultGeekQ<Boolean> checkPath(MiaoShaUserVo user, long goodsId, String path);
+
+    public BufferedImage getRandcode(MiaoShaUser user, long goodsId);
+
+    public boolean checkVerifyCode(MiaoShaUserVo user, long goodsId, String verifyCode);
+
+    public ResultGeekQ<Integer> miaoshaComfirm(MiaoShaUser user, long goodsId);
+
+    public ResultGeekQ<Long> miaoshaResult(MiaoShaUser user, long goodsId);
 }

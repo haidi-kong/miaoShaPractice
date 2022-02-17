@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.travel.order.provider.mapper.MiaoShaGoodsDao" >
-  <resultMap id="BaseResultMap" type="com.travel.api.function.entity.MiaoShaGoods" >
+<mapper namespace="com.travel.order.providers.mapper.MiaoShaGoodsDao" >
+  <resultMap id="BaseResultMap" type="com.travel.order.apis.entity.MiaoShaGoods" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="goods_id" property="goodsId" jdbcType="BIGINT" />
     <result column="miaosha_price" property="miaoshaPrice" jdbcType="DECIMAL" />
@@ -22,7 +22,7 @@
     delete from miaosha_goods
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.travel.api.function.entity.MiaoShaGoods" >
+  <insert id="insert" parameterType="com.travel.order.apis.entity.MiaoShaGoods" >
     insert into miaosha_goods (id, goods_id, miaosha_price, 
       stock_count, start_date, end_date
       )
@@ -30,7 +30,7 @@
       #{stockCount,jdbcType=INTEGER}, #{startDate,jdbcType=TIMESTAMP}, #{endDate,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.travel.api.function.entity.MiaoShaGoods" >
+  <insert id="insertSelective" parameterType="com.travel.order.apis.entity.MiaoShaGoods" >
     insert into miaosha_goods
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -73,7 +73,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.travel.api.function.entity.MiaoShaGoods" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.travel.order.apis.entity.MiaoShaGoods" >
     update miaosha_goods
     <set >
       <if test="goodsId != null" >
@@ -94,7 +94,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.travel.api.function.entity.MiaoShaGoods" >
+  <update id="updateByPrimaryKey" parameterType="com.travel.order.apis.entity.MiaoShaGoods" >
     update miaosha_goods
     set goods_id = #{goodsId,jdbcType=BIGINT},
       miaosha_price = #{miaoshaPrice,jdbcType=DECIMAL},

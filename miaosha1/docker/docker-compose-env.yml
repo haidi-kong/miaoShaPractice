@@ -49,8 +49,8 @@ services:
     container_name: nacos-standalone
     restart: always
     environment:
-      - PREFER_HOST_MODE=hostname
       - MODE=standalone
+      - NACOS_SERVER_IP=81.69.254.72
     volumes:
       - /mydata/nacos/logs:/home/nacos/logs
       - /mydata/nacos/init.d/custom.properties:/home/nacos/init.d/custom.properties

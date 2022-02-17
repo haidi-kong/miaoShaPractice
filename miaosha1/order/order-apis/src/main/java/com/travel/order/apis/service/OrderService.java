@@ -5,8 +5,8 @@ package com.travel.order.apis.service;
 import com.travel.common.resultbean.ResultGeekQ;
 import com.travel.order.apis.entity.GoodsVo;
 import com.travel.order.apis.entity.MiaoShaOrderVo;
-import com.travel.order.apis.entity.MiaoShaUserVo;
 import com.travel.order.apis.entity.OrderInfoVo;
+import com.travel.users.apis.entity.MiaoShaUserVo;
 
 /**
  * @author
