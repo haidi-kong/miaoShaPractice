@@ -1,0 +1,52 @@
+spring:
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://81.69.254.72:3306/miaosha1?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+  thymeleaf:
+    cache: false # 开发时关闭缓存,不然没法看到实时页面
+    mode: HTML5 # 用非严格的 HTML
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    prefix: classpath:/templates/
+    check-template-location : true
+    suffix: .html
+  resources:
+      static-locations: classpath:/static/, classpath:/templates/
+  redis:
+    database: 0
+    timeout: 0
+    port: 26379
+    host: 81.69.254.72
+    password: luozijing@2021
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 8
+        max-wait: -1
+pageCache:
+  enable: true
+logging:
+  level:
+    com.cet.diagsyscloud.system.dao: DEBUG
+    #root: DEBUG
+
+zookeeper:
+  address: 81.69.254.72:2181
+  timeout: 200000
+
+dubbo:
+  application:
+    name: ORDER
+  registry:
+    address: nacos://81.69.254.72:8848
+  config-center:
+    address: nacos://81.69.254.72:8848
+  metadata-report:
+    address: nacos://81.69.254.72:8848
+  protocol:
+    name: dubbo
+    port: 22383
