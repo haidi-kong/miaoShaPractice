@@ -56,3 +56,16 @@ logging:
 zookeeper:
   address: myzookeeper:2181
   timeout: 200000
+
+dubbo:
+  application:
+    name: ADMIN
+  registry:
+    address: nacos://mynacos:8848
+  config-center:
+    address: nacos://mynacos:8848
+  metadata-report:
+    address: nacos://mynacos:8848
+  protocol:
+    name: dubbo
+    port: 22385

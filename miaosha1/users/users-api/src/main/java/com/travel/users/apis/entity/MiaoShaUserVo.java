@@ -1,5 +1,6 @@
 package com.travel.users.apis.entity;
 
+import com.travel.common.commonDomain.BaseDomain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,7 @@ import java.util.Date;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MiaoShaUserVo {
+public class MiaoShaUserVo extends BaseDomain {
     private Long id;
 
     private String nickname;

@@ -67,7 +67,7 @@ public enum ResultStatus {
      * 秒杀模块
      */
     MIAO_SHA_OVER(40001,"商品已经秒杀完毕"),
-    REPEATE_MIAOSHA(40002,"秒杀"),
+    REPEATE_MIAOSHA(40002,"重复秒杀"),
     MIAOSHA_REDUCE_FAIL(40004,"减库存失败"),
     MIAOSHA_FAIL(40003,"秒杀失败"),
     MIAOSHA_RESULT_FAIL(40005,"获取秒杀结果失败"),

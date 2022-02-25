@@ -181,8 +181,8 @@ function render(detail){
 	var miaoshaStatus = detail.miaoshaStatus;
 	var  remainSeconds = detail.remainSeconds;
 	var goods = detail.goods;
-	var user = detail.user;
-	if(user){
+	console.log("xxxxxxx" + goods.isLogin)
+	if(detail.isLogin === 1){
 		$("#userTip").hide();
         $("#toLogin").hide();
 	}

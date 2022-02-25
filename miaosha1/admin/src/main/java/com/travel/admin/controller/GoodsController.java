@@ -1,7 +1,6 @@
 package com.travel.admin.controller;
 
 import com.travel.admin.config.mvc.UserCheckAndLimit;
-import com.travel.common.enums.ResultStatus;
 import com.travel.common.resultbean.ResultGeekQ;
 import com.travel.order.apis.entity.GoodsDetailVo;
 import com.travel.order.apis.entity.GoodsVo;
@@ -10,8 +9,6 @@ import com.travel.users.apis.entity.MiaoShaUser;
 import com.travel.users.apis.service.MiaoShaUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,15 +21,12 @@ import java.util.List;
 
 /**
  * @auther luo
- * @date 2019/11/10  b7797cce01b4b131b433b6acf4add449
+ * @date 2019/11/10
  */
 @Controller
 @RequestMapping("/goods")
 @Slf4j
 public class GoodsController extends BaseController {
-
-    @DubboReference
-    private MiaoShaUserService miaoShaUserService;
 
     @DubboReference
     private GoodsService goodsService;

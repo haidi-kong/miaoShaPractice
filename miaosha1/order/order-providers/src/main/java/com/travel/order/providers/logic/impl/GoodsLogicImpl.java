@@ -35,8 +35,5 @@ public class GoodsLogicImpl implements GoodsLogic {
         return goodsDao.getGoodsVoByGoodsId(goodsId);
     }
 
-    @Override
-    public int reduceStock(MiaoShaGoods miaoShaGoods) {
-        return goodsDao.reduceStock(miaoShaGoods);
-    }
+
 }

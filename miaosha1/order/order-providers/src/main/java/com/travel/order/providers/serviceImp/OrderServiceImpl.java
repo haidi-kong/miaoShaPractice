@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-@DubboService(timeout = 900000, cluster = "failfast")
+@DubboService(timeout = 9000000, cluster = "failfast")
 public class OrderServiceImpl implements OrderService {
 
     @Autowired

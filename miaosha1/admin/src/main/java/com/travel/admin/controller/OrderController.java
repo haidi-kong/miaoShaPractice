@@ -24,10 +24,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class OrderController {
 
 	@DubboReference
-	MiaoshaService miaoshaService;
-	@Autowired
 	OrderService orderService;
-	@Autowired
+	@DubboReference
 	GoodsService goodsService;
 
     @RequestMapping("/detail")

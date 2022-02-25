@@ -1,16 +1,16 @@
 package com.travel.order.apis.entity;
 
-import com.travel.users.apis.entity.MiaoShaUserVo;
+import com.travel.common.commonDomain.BaseDomain;
 import lombok.Data;
 
 /**
  * @author
  */
 @Data
-public class GoodsDetailVo {
+public class GoodsDetailVo extends BaseDomain {
 
     private int miaoshaStatus = 0;
     private int remainSeconds = 0;
     private GoodsVo goods ;
-    private MiaoShaUserVo user;
+    private int isLogin = 0;
 }

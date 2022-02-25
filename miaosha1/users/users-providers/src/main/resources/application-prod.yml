@@ -28,13 +28,19 @@ spring:
           initial-interval: 3000
         default-requeue-rejected: true
 
-pageCache:
-  enable: true
-logging:
-  level:
-    com.cet.diagsyscloud.system.dao: DEBUG
-    #root: DEBUG
-
 zookeeper:
   address: 81.69.254.72:2181
   timeout: 200000
+
+dubbo:
+  application:
+    name: USER
+  registry:
+    address: nacos://mynacos:8848
+  config-center:
+    address: nacos://mynacos:8848
+  metadata-report:
+    address: nacos://mynacos:8848
+  protocol:
+    name: dubbo
+    port: 22384

@@ -15,7 +15,7 @@ public interface MiaoShaOrderDao {
 
     int updateByPrimaryKeySelective(MiaoShaOrder record);
 
-    public MiaoShaOrder getMiaoshaOrderByUserIdGoodsId(@Param("userId")long userId, @Param("goodsId")long goodsId);
+    MiaoShaOrder getMiaoshaOrderByUserIdGoodsId(@Param("userId")long userId, @Param("goodsId")long goodsId);
 
-    public List<MiaoShaOrder> listByGoodsId(@Param("goodsId") long goodsId);
+    List<MiaoShaOrder> listByGoodsId(@Param("goodsId") long goodsId);
 }

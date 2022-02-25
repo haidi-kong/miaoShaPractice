@@ -8,14 +8,12 @@ import com.travel.common.config.redis.RedisServiceImpl;
 import com.travel.common.enums.ResultStatus;
 import com.travel.common.resultbean.ResultGeekQ;
 import com.travel.users.apis.entity.MiaoShaUser;
-import com.travel.users.apis.service.MiaoShaUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,9 +31,6 @@ import static com.travel.common.enums.ResultStatus.SESSION_ERROR;
 @Slf4j
 public class AccessInterceptor  implements HandlerInterceptor {
 
-
-	@Autowired
-	MiaoShaUserService userService;
 
 	@Autowired
 	private CookiesUtilService cookiesUtilService;
@@ -56,12 +51,15 @@ public class AccessInterceptor  implements HandlerInterceptor {
 		}else if(handler instanceof HandlerMethod) {
 			log.info("打印拦截方法handler ：{} ",handler);
 			// 统计网页总访问次数
-			WebStatisticKey webStatisticKey = WebStatisticKey.withExpire(100);
-			if (redisService.get(webStatisticKey, "_data", Integer.class) != null) {
-				redisService.incr(webStatisticKey, "_data");
-			} else {
-				redisService.set(webStatisticKey, "_data", 1);
+			WebStatisticKey webStatisticKey = WebStatisticKey.withExpire(-1);
+			if ("toLogin".equals(((HandlerMethod) handler).getMethod().getName())) {
+				if (redisService.get(webStatisticKey, "_data", Integer.class) != null) {
+					redisService.incr(webStatisticKey, "_data");
+				} else {
+					redisService.set(webStatisticKey, "_data", 1);
+				}
 			}
+
 			HandlerMethod hm = (HandlerMethod)handler;
 			MiaoShaUser user = getUser(request, response);
 			UserContext.setUser(user);

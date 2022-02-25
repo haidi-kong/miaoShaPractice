@@ -5,17 +5,6 @@ spring:
     url: jdbc:mysql://mydb:3306/miaosha?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.jdbc.Driver
-  thymeleaf:
-    cache: false # 开发时关闭缓存,不然没法看到实时页面
-    mode: HTML5 # 用非严格的 HTML
-    encoding: UTF-8
-    servlet:
-      content-type: text/html
-    prefix: classpath:/templates/
-    check-template-location : true
-    suffix: .html
-  resources:
-      static-locations: classpath:/static/, classpath:/templates/
   redis:
     database: 0
     timeout: 0
@@ -38,21 +27,19 @@ spring:
           max-attempts: 3
           initial-interval: 3000
         default-requeue-rejected: true
-
-
-mybatis:
-  mapper-locations: com/travel/function/mapper/*.xml
-  type-aliases-package: com.travel.function.entity,com.travel.function.vo
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-pageCache:
-  enable: true
-logging:
-  file: /var/logs
-  level:
-    com.cet.diagsyscloud.system.dao: DEBUG
-
 zookeeper:
   address: myzookeeper:2181
   timeout: 200000
+
+dubbo:
+  application:
+    name: ORDER
+  registry:
+    address: nacos://mynacos:8848
+  config-center:
+    address: nacos://mynacos:8848
+  metadata-report:
+    address: nacos://mynacos:8848
+  protocol:
+    name: dubbo
+    port: 22384

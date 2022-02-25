@@ -1,12 +1,13 @@
 package com.travel.order.apis.entity;
 
+import com.travel.common.commonDomain.BaseDomain;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-public class OrderInfoVo {
+public class OrderInfoVo extends BaseDomain {
     private Long id;
 
     private Long userId;

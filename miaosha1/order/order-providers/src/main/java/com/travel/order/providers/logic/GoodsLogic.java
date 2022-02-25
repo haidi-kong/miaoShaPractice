@@ -20,5 +20,4 @@ public interface GoodsLogic {
 
     GoodsVo getGoodsVoByGoodsId(Long goodsId);
 
-    public int reduceStock(MiaoShaGoods miaoShaGoods);
 }

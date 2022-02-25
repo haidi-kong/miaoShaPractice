@@ -15,11 +15,11 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface MiaoShaUserService {
 
-    public ResultGeekQ<MiaoShaUserVo> getByPhoneId(Long id);
+    ResultGeekQ<MiaoShaUserVo> getByPhoneId(Long id);
 
-    public ResultGeekQ<MiaoShaUser> login(LoginVo loginVo);
+    ResultGeekQ<MiaoShaUser> login(LoginVo loginVo);
 
-    public ResultGeekQ<String> register(RegisterVo registerVo);
+    ResultGeekQ<String> register(RegisterVo registerVo);
 
     ResultGeekQ<MiaoShaUserVo> getByName(String name);
 }

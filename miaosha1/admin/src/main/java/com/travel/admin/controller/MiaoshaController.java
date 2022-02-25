@@ -1,35 +1,25 @@
 package com.travel.admin.controller;
 
 import com.travel.admin.config.mvc.UserCheckAndLimit;
-import com.travel.common.config.redis.RedisServiceImpl;
-import com.travel.common.enums.Constants;
-import com.travel.common.enums.CustomerConstant;
+import com.travel.admin.utils.VerifyCodeUtils;
 import com.travel.common.enums.ResultStatus;
 import com.travel.common.resultbean.ResultGeekQ;
-import com.travel.order.apis.entity.GoodsVo;
-import com.travel.order.apis.service.GoodsService;
 import com.travel.order.apis.service.MiaoshaService;
-import com.travel.order.apis.service.OrderService;
 import com.travel.users.apis.entity.MiaoShaUser;
 import com.travel.users.apis.entity.MiaoShaUserVo;
-import com.travel.users.apis.service.MiaoShaUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
-import org.springframework.amqp.AmqpException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.OutputStream;
-import java.util.List;
 
 @Controller
 @RequestMapping("/miaosha")
@@ -37,22 +27,10 @@ import java.util.List;
 public class MiaoshaController {
 
     @DubboReference
-    MiaoShaUserService userService;
-
-    @Autowired
-    RedisServiceImpl redisService;
-
-    @DubboReference
-    GoodsService goodsService;
-
-    @DubboReference
-    OrderService orderService;
-
-    @DubboReference
     MiaoshaService miaoshaService;
 
     @Autowired
-    StringRedisTemplate redisTemplate;
+    VerifyCodeUtils verifyCodeUtils;
 
 
     @RequestMapping(value = "/result", method = RequestMethod.GET)
@@ -107,7 +85,8 @@ public class MiaoshaController {
             return result;
         }
         try {
-            BufferedImage image = miaoshaService.getRandcode(user, goodsId);
+            String randcodes = miaoshaService.getRandcode(user, goodsId);
+            BufferedImage image = verifyCodeUtils.drawRandCode(randcodes);
             OutputStream out = response.getOutputStream();
             ImageIO.write(image, "JPEG", out);
             out.flush();

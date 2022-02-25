@@ -45,20 +45,23 @@
 	       		</div>
       		</div>
 	</div>
-	
-	<div class="row">
-		     	<div class="col-md-5">
-					<button class="btn btn-primary btn-block"  onclick="register()">注册</button>
-	       	 	</div>
-	       	 	<div class="col-md-5">
-					<button class="btn btn-primary btn-block" type="submit" onclick="login()">登录</button>
-	       	 	</div>
-	 </div>
+
+	<div class="form-group">
+		<div class="row">
+			<div class="col-md-5">
+				<button class="btn btn-primary btn-block"  onclick="register()">注册</button>
+			</div>
+			<div class="col-md-5">
+				<button class="btn btn-primary btn-block" type="submit" onclick="login()">登录</button>
+			</div>
+		</div>
+	</div>
+
 
 	<div class="row">
-		<label class="form-label col-md-4">当前网页总访问次数</label>
+		<label class="form-label col-md-3">当前网页总访问次数</label>
 		<div class="col-md-5">
-			<p id="webCount"></p>>
+			<p id="webCount"></p>
 		</div>
 	</div>
 
@@ -109,8 +112,7 @@ function doLogin(){
 }
 
 function render(detail){
-	var count = detail;
-	$("#goodsName").text(count);
+	$("#webCount").text(detail);
 }
 
 $(function(){
@@ -119,10 +121,10 @@ $(function(){
 
 function getWebStatistic(){
 	$.ajax({
-		url:"/getWebStatistic",
+		url:"/login/getWebStatistic",
 		type:"GET",
 		success:function(data){
-			if(data.code == 0){
+			if(data.code === 0){
 				render(data.data);
 			}else{
 				layer.msg(data.message);

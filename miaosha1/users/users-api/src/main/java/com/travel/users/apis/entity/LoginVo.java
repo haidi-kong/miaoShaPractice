@@ -1,5 +1,6 @@
 package com.travel.users.apis.entity;
 
+import com.travel.common.commonDomain.BaseDomain;
 import com.travel.users.apis.valiadator.CheckMobile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginVo {
+public class LoginVo extends BaseDomain {
     @NotNull
     @CheckMobile
     private Long mobile;

@@ -26,7 +26,7 @@ CREATE TABLE `miaosha_order` (
   `goods_id` bigint(20) DEFAULT NULL COMMENT '商品ID',
   PRIMARY KEY (`id`),
   UNIQUE KEY `u_uid_gid` (`user_id`,`goods_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1560 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=1560 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of miaosha_order

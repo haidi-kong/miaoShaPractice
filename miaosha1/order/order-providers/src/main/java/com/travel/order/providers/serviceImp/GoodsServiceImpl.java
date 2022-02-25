@@ -7,6 +7,7 @@ import com.travel.order.apis.entity.GoodsVo;
 import com.travel.order.apis.entity.MiaoShaGoods;
 import com.travel.order.apis.service.GoodsService;
 import com.travel.order.providers.logic.GoodsLogic;
+import com.travel.order.providers.mapper.MiaoShaGoodsDao;
 import com.travel.order.providers.utils.enums.MiaoShaStatus;
 import com.travel.users.apis.entity.MiaoShaUser;
 import com.travel.users.apis.entity.MiaoShaUserVo;
@@ -17,14 +18,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
-@DubboService(timeout = 900000, cluster = "failfast")
+@DubboService(timeout = 9000000, cluster = "failfast")
 public class GoodsServiceImpl implements GoodsService {
 
     @Autowired
     private GoodsLogic goodsLogic;
+
+    @Autowired
+    private MiaoShaGoodsDao miaoShaGoodsDao;
 
     @Override
     public ResultGeekQ<List<GoodsVo>> goodsVoList() {
@@ -64,9 +69,9 @@ public class GoodsServiceImpl implements GoodsService {
             log.info("***reduceStock***start!");
             MiaoShaGoods g = new MiaoShaGoods();
             g.setGoodsId(goods.getId());
-            Boolean reduceSorF = goodsLogic.reduceStock(g)>0;
-            if(reduceSorF==false){
-                log.error(" *****reduceSorF扣减库存发生错误*****");
+            Boolean reduceSorF = miaoShaGoodsDao.reduceLockStock(g)>0;
+            if(!reduceSorF){
+                log.error(" *****reduceStock扣减库存发生错误*****");
                 resultGeekQ.withErrorCodeAndMessage(ResultStatus.DATA_NOT_EXISTS);
                 return resultGeekQ;
             }
@@ -109,9 +114,9 @@ public class GoodsServiceImpl implements GoodsService {
             }
             GoodsDetailVo vo = new GoodsDetailVo();
             vo.setGoods(goods);
-            MiaoShaUserVo userVo = new MiaoShaUserVo();
-            BeanUtils.copyProperties(user,userVo);
-            vo.setUser(userVo);
+            if (Objects.nonNull(user)) {
+                vo.setIsLogin(1);
+            }
             vo.setRemainSeconds(remainSeconds);
             vo.setMiaoshaStatus(miaoshaStatus);
             resultGeekQ.setData(vo);

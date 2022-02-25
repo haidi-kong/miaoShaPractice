@@ -25,15 +25,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Service
 @Slf4j
-@DubboService(timeout = 900000, cluster = "failfast")
+@DubboService(timeout = 9000000, cluster = "failfast")
 public class MiaoShaUserServiceImpl implements MiaoShaUserService {
 
 
     @Autowired
     private MiaoShaUserDao miaoShaUserDao;
 
-    @Autowired
-    private UserLogic userLogic ;
 
 
     @Override

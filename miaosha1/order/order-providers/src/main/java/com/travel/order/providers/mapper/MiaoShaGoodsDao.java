@@ -14,4 +14,12 @@ public interface MiaoShaGoodsDao {
     int updateByPrimaryKeySelective(MiaoShaGoods record);
 
     int updateByPrimaryKey(MiaoShaGoods record);
+
+    int reduceStock(MiaoShaGoods miaoShaGoods);
+
+    int reduceLockStock(MiaoShaGoods miaoShaGoods);
+
+    /**
+     * 加入支付，真实扣减库存（真实的作用防止撞商品码）
+     */
 }

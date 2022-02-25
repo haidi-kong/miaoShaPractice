@@ -9,8 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 //@EnableTccTransaction
-@EnableDubbo(scanBasePackages = "com.travel.order.providers.serviceImp")
-@MapperScan("com.travel.users.providers.serviceImp")
+@EnableDubbo(scanBasePackages = "com.travel.users.providers.serviceImp")
+@MapperScan("com.travel.users.providers.mapper")
 public class UsersApplication {
 
     public static void main(String[] args) {

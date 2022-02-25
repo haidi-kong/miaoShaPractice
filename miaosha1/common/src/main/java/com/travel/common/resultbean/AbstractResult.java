@@ -20,6 +20,10 @@ public class AbstractResult {
         this.status = status;
     }
 
+    protected AbstractResult() {
+
+    }
+
     public static boolean isSuccess(AbstractResult result) {
         return result != null && result.status == ResultStatus.SUCCESS && result.getCode() == ResultStatus.SUCCESS.getCode();
     }

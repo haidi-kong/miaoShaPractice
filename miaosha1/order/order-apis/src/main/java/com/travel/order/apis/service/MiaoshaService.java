@@ -25,7 +25,7 @@ public interface MiaoshaService {
 
     public ResultGeekQ<Boolean> checkPath(MiaoShaUserVo user, long goodsId, String path);
 
-    public BufferedImage getRandcode(MiaoShaUser user, long goodsId);
+    public String getRandcode(MiaoShaUser user, long goodsId);
 
     public boolean checkVerifyCode(MiaoShaUserVo user, long goodsId, String verifyCode);
 

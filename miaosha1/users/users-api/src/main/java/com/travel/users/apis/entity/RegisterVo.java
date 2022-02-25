@@ -1,6 +1,7 @@
 package com.travel.users.apis.entity;
 
 
+import com.travel.common.commonDomain.BaseDomain;
 import com.travel.users.apis.valiadator.CheckMobile;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
@@ -12,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class RegisterVo {
+public class RegisterVo extends BaseDomain {
     @NotNull
     @CheckMobile
     private Long mobile ;

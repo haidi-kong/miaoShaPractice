@@ -1,14 +1,15 @@
 package com.travel.order.apis.entity;
 
+import com.travel.common.commonDomain.BaseDomain;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-@Setter
-@Getter
-public class GoodsVo {
+@Data
+public class GoodsVo extends BaseDomain {
 
 
     private BigDecimal miaoshaPrice;

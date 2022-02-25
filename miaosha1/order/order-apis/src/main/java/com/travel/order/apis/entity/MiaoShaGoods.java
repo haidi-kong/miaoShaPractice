@@ -13,6 +13,8 @@ public class MiaoShaGoods {
 
     private BigDecimal miaoshaPrice;
 
+    private Integer lockStock;
+
     private Integer stockCount;
 
     private Date startDate;

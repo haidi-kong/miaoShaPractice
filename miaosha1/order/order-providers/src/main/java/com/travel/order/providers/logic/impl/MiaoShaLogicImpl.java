@@ -38,9 +38,6 @@ public class MiaoShaLogicImpl implements MiaoShaLogic {
     @Autowired
     private RedisServiceImpl redisClient;
 
-//    @Autowired
-//    private MiaoShaUserDao mUserDao;
-
     @Override
     public OrderInfo createOrder(MiaoShaUser user, GoodsVo goods) {
         OrderInfo orderInfo = new OrderInfo();

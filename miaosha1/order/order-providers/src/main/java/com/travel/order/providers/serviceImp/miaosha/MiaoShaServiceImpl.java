@@ -50,7 +50,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
-@DubboService(timeout = 900000, cluster = "failfast")
+@DubboService(timeout = 9000000, cluster = "failfast")
 public class MiaoShaServiceImpl implements MiaoshaService {
 
 
@@ -88,8 +88,10 @@ public class MiaoShaServiceImpl implements MiaoshaService {
             log.error("***系统初始化商品预热失败***");
             return;
         }
+
         List<GoodsVo> goodsList = goodsListR.getData();
         for (GoodsVo goods : goodsList) {
+            log.info("product {}", goods);
             redisClient.set(GoodsKey.getMiaoshaGoodsStock, "" + goods.getId(), goods.getStockCount());
         }
     }
@@ -242,7 +244,7 @@ public class MiaoShaServiceImpl implements MiaoshaService {
     }
 
     @Override
-    public BufferedImage getRandcode(MiaoShaUser user, long goodsId) {
+    public String getRandcode(MiaoShaUser user, long goodsId) {
         return randomValidateCodeService.getRandcode(user, goodsId);
     }
 

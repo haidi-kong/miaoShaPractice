@@ -6,11 +6,12 @@
     <result column="goods_id" property="goodsId" jdbcType="BIGINT" />
     <result column="miaosha_price" property="miaoshaPrice" jdbcType="DECIMAL" />
     <result column="stock_count" property="stockCount" jdbcType="INTEGER" />
+    <result column="lock_stock" property="lockStock" jdbcType="INTEGER" />
     <result column="start_date" property="startDate" jdbcType="TIMESTAMP" />
     <result column="end_date" property="endDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, goods_id, miaosha_price, stock_count, start_date, end_date
+    id, goods_id, miaosha_price, stock_count, lock_stock, start_date, end_date
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -24,10 +25,10 @@
   </delete>
   <insert id="insert" parameterType="com.travel.order.apis.entity.MiaoShaGoods" >
     insert into miaosha_goods (id, goods_id, miaosha_price, 
-      stock_count, start_date, end_date
+      stock_count,lock_stock, start_date, end_date
       )
     values (#{id,jdbcType=BIGINT}, #{goodsId,jdbcType=BIGINT}, #{miaoshaPrice,jdbcType=DECIMAL}, 
-      #{stockCount,jdbcType=INTEGER}, #{startDate,jdbcType=TIMESTAMP}, #{endDate,jdbcType=TIMESTAMP}
+      #{stockCount,jdbcType=INTEGER}, #{lockStock,jdbcType=INTEGER}, #{startDate,jdbcType=TIMESTAMP}, #{endDate,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.travel.order.apis.entity.MiaoShaGoods" >
@@ -99,8 +100,20 @@
     set goods_id = #{goodsId,jdbcType=BIGINT},
       miaosha_price = #{miaoshaPrice,jdbcType=DECIMAL},
       stock_count = #{stockCount,jdbcType=INTEGER},
+      lock_stock = #{lockStock,jdbcType=INTEGER},
       start_date = #{startDate,jdbcType=TIMESTAMP},
       end_date = #{endDate,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <update id="reduceLockStock" >
+       update miaosha_goods set
+       lock_stock = lock_stock +1
+       where goods_id = #{goodsId} and stock_count - lock_stock > 0
+   </update>
+
+  <update id="reduceStock" >
+       update miaosha_goods set stock_count = stock_count - 1, lock_stock = lock_stock - 1,
+       where goods_id = #{goodsId} and stock_count > 0 and lock_stock > 0
+   </update>
 </mapper>

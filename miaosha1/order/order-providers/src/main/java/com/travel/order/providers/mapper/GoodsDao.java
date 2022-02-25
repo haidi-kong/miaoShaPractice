@@ -23,4 +23,5 @@ public interface GoodsDao {
     GoodsVo getGoodsVoByGoodsId(@Param("goodsId") long goodsId);
 
     public int reduceStock(MiaoShaGoods miaoShaGoods);
+    public int reduceLockStock(MiaoShaGoods miaoShaGoods);
 }
