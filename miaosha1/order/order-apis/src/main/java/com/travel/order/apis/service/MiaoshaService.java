@@ -32,4 +32,6 @@ public interface MiaoshaService {
     public ResultGeekQ<Integer> miaoshaComfirm(MiaoShaUser user, long goodsId);
 
     public ResultGeekQ<Long> miaoshaResult(MiaoShaUser user, long goodsId);
+
+    public ResultGeekQ<Long> completeOrder(MiaoShaUser user, long orderId);
 }

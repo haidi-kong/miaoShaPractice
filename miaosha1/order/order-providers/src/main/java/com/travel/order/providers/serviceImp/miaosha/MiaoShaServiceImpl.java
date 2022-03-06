@@ -10,11 +10,14 @@ import com.travel.common.utils.CommonMethod;
 import com.travel.common.utils.MD5Util;
 import com.travel.common.utils.UUIDUtil;
 import com.travel.order.apis.entity.GoodsVo;
+import com.travel.order.apis.entity.MiaoShaGoods;
 import com.travel.order.apis.entity.MiaoShaOrderVo;
 import com.travel.order.apis.entity.OrderInfoVo;
 import com.travel.order.apis.service.GoodsService;
 import com.travel.order.apis.service.MiaoshaService;
 import com.travel.order.apis.service.OrderService;
+import com.travel.order.providers.Exception.OrderNotExistException;
+import com.travel.order.providers.Exception.StockShortageException;
 import com.travel.order.providers.config.Zookeeper.WatcherApi;
 import com.travel.order.providers.config.rabbitMq.MQSender;
 import com.travel.order.providers.config.redis.keysbean.GoodsKey;
@@ -23,14 +26,19 @@ import com.travel.order.providers.entity.OrderInfo;
 import com.travel.order.providers.entity.miaosha.MiaoShaMessage;
 import com.travel.order.providers.entity.miaosha.MiaoShaOrder;
 import com.travel.order.providers.logic.MiaoShaLogic;
+import com.travel.order.providers.mapper.MiaoShaGoodsDao;
 import com.travel.order.providers.mapper.MiaoShaOrderDao;
+import com.travel.order.providers.mapper.OrderInfoDao;
 import com.travel.order.providers.utils.ProductSoutOutMap;
 import com.travel.order.providers.utils.RandomValidateCodeService;
 import com.travel.order.providers.utils.ValidMSTime;
+import com.travel.order.providers.utils.enums.OrderStatus;
 import com.travel.users.apis.entity.MiaoShaUser;
 import com.travel.users.apis.entity.MiaoShaUserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
+import org.aspectj.weaver.ast.Or;
+import org.mengyun.tcctransaction.api.Compensable;
 import org.springframework.amqp.AmqpException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +72,9 @@ public class MiaoShaServiceImpl implements MiaoshaService {
     MiaoShaOrderDao miaoShaOrderDao;
 
     @Autowired
+    MiaoShaGoodsDao miaoShaGoodsfDao;
+
+    @Autowired
     RedisServiceImpl redisClient;
 
     @Autowired
@@ -71,6 +82,9 @@ public class MiaoShaServiceImpl implements MiaoshaService {
 
     @Autowired
     private ZkApi zooKeeper;
+
+    @Autowired
+    private OrderInfoDao orderInfoDao;
 
     @Autowired
     MQSender sender;
@@ -345,6 +359,70 @@ public class MiaoShaServiceImpl implements MiaoshaService {
             result.withErrorCodeAndMessage(ResultStatus.MIAOSHA_FAIL);
             return result;
         }
+    }
+
+    @Override
+    @Compensable(confirmMethod = "confirmCompleteOrder", cancelMethod = "cancelCompleteOrder")
+    @Transactional
+    public ResultGeekQ<Long> completeOrder(MiaoShaUser user, long orderId) {
+        ResultGeekQ<Long> resultGeekQ  = ResultGeekQ.build();
+        log.info("start tcc completeOrder try, user:{}, orderId:{}", user, orderId);
+        ResultGeekQ<OrderInfoVo> orderInfo = orderService.getOrderById(orderId);
+        if (!ResultGeekQ.isSuccess(orderInfo)) {
+            throw new OrderNotExistException("order not exist");
+        }
+        // 判断库存是否充足 预扣减库存 库存在下单时已经扣减 不用处理
+        MiaoShaGoods miaoShaGoods = miaoShaGoodsfDao.selectByPrimaryKey(orderInfo.getData().getGoodsId());
+        if (miaoShaGoods.getStockCount() <= 0) {
+            throw new StockShortageException("shortage of good");
+        }
+        // 订单状态改变
+        if (OrderStatus.ORDER_NOT_PAY.getCode() == orderInfo.getData().getStatus()) {
+            OrderInfo orderInfoUpdate = new OrderInfo();
+            orderInfoUpdate.setId(orderInfo.getData().getId());
+            orderInfoUpdate.setStatus(OrderStatus.ORDER_PAYING.getCode());
+            orderInfoDao.updateByPrimaryKeySelective(orderInfoUpdate);
+        }
+        return resultGeekQ;
+    }
+
+
+
+    @Transactional
+    public ResultGeekQ<Long> confirmCompleteOrder(MiaoShaUser user, long orderId) {
+        ResultGeekQ<Long> resultGeekQ  = ResultGeekQ.build();
+        log.info("start tcc completeOrder confirm, user:{}, orderId:{}", user, orderId);
+        ResultGeekQ<OrderInfoVo> orderInfo = orderService.getOrderById(orderId);
+
+        // 订单状态改变 订单用来做幂等控制
+        if (OrderStatus.ORDER_PAYING.getCode() == orderInfo.getData().getStatus()) {
+            OrderInfo orderInfoUpdate = new OrderInfo();
+            orderInfoUpdate.setId(orderInfo.getData().getId());
+            orderInfoUpdate.setStatus(OrderStatus.ORDER_PYA_COMPLETE.getCode());
+            orderInfoDao.updateByPrimaryKeySelective(orderInfoUpdate);
+
+            // 实际扣减库存
+            MiaoShaGoods miaoShaGoodsUpdate = new MiaoShaGoods();
+            miaoShaGoodsUpdate.setGoodsId(orderInfo.getData().getGoodsId());
+            miaoShaGoodsfDao.reduceStock(miaoShaGoodsUpdate);
+        }
+        return resultGeekQ;
+    }
+
+    @Transactional
+    public ResultGeekQ<Long> cancelCompleteOrder(MiaoShaUser user, long orderId) {
+        ResultGeekQ<Long> resultGeekQ  = ResultGeekQ.build();
+        log.info("start tcc completeOrder cancel, user:{}, orderId:{}", user, orderId);
+        ResultGeekQ<OrderInfoVo> orderInfo = orderService.getOrderById(orderId);
+
+        // 订单状态改变 库存无需变化
+        if (OrderStatus.ORDER_PAYING.getCode() == orderInfo.getData().getStatus()) {
+            OrderInfo orderInfoUpdate = new OrderInfo();
+            orderInfoUpdate.setId(orderInfo.getData().getId());
+            orderInfoUpdate.setStatus(OrderStatus.ORDER_PYA_CANCEL.getCode());
+            orderInfoDao.updateByPrimaryKeySelective(orderInfoUpdate);
+        }
+        return resultGeekQ;
     }
 
     private MiaoShaOrder get(List<MiaoShaOrder> orders, Long userId) {

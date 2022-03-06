@@ -2,10 +2,9 @@ package com.travel.users.apis.service;
 
 
 import com.travel.common.resultbean.ResultGeekQ;
-import com.travel.users.apis.entity.LoginVo;
-import com.travel.users.apis.entity.MiaoShaUser;
-import com.travel.users.apis.entity.MiaoShaUserVo;
-import com.travel.users.apis.entity.RegisterVo;
+import com.travel.users.apis.entity.*;
+import org.mengyun.tcctransaction.api.TransactionContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -22,4 +21,9 @@ public interface MiaoShaUserService {
     ResultGeekQ<String> register(RegisterVo registerVo);
 
     ResultGeekQ<MiaoShaUserVo> getByName(String name);
+
+    /**
+     * 支付订单
+     */
+    ResultGeekQ<MiaoShaUserVo> pay(MiaoShaUser user, PaymentVo paymentVo);
 }

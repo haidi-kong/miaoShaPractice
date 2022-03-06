@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.travel.users.providers.mapper.MiaoshaUserAccountDao" >
+  <resultMap id="BaseResultMap" type="com.travel.users.providers.entity.MiaoshaPayment" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="amount" property="amount" jdbcType="DECIMAL" />
+    <result column="user_id" property="userId" jdbcType="LONG" />
+    <result column="miaosha_order_id" property="miaoshaOrderId" jdbcType="LONG" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="version" property="version" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id,amount, user_id, miaosha_order_id, create_time, update_time,status,version
+  </sql>
+
+  <select id="selectByOrderID" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from miaosha_payment
+    where miaosha_order_id = #{miaoshaOrderId,jdbcType=LONG}
+  </select>
+
+  <insert id="insertSelective" parameterType="com.travel.users.providers.entity.MiaoshaPayment" >
+    insert into miaosha_account
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="amount != null" >
+        amount,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="miaoshaOrderId != null" >
+        miaosha_order_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="version != null" >
+        version,
+      </if>
+
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="amount != null" >
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=LONG},
+      </if>
+      <if test="miaoshaOrderId != null" >
+        #{miaoshaOrderId,jdbcType=LONG},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null" >
+        #{version,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByUserID" parameterType="com.travel.users.providers.entity.MiaoshaPayment" >
+    update miaosha_payment
+    <set >
+      <if test="amount != null" >
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null" >
+        version = #{version,jdbcType=INTEGER},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=LONG}
+  </update>
+</mapper>

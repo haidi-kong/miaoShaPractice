@@ -37,6 +37,9 @@ public class GlobleExceptionHandler {
         } else if(e instanceof UserException){
             log.error("***用户不存在请检查!***");
             resultGeekQ.withErrorArgs(ResultStatus.USER_NOT_EXIST.getCode(),ResultStatus.USER_NOT_EXIST.getMessage());
+        } else {
+            log.error("======异常信息为==== error:{}",e.getMessage());
+            resultGeekQ.withErrorArgs(ResultStatus.SYSTEM_ERROR.getCode(),ResultStatus.SYSTEM_ERROR.getMessage());
         }
         return resultGeekQ;
     }

@@ -16,9 +16,6 @@ import java.io.OutputStream;
 @Controller
 public class BaseController {
 
-
-
-
     @Autowired
     ThymeleafViewResolver thymeleafViewResolver;
 

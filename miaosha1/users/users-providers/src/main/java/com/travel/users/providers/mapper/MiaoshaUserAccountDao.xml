@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.travel.users.providers.mapper.MiaoshaUserAccountDao" >
+  <resultMap id="BaseResultMap" type="com.travel.users.providers.entity.MiaoshaUserAccount" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="balance_amount" property="balanceAmount" jdbcType="DECIMAL" />
+    <result column="transfer_amount" property="transferAmount" jdbcType="DECIMAL" />
+    <result column="user_id" property="userId" jdbcType="LONG" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id,balance_amount, transfer_amount,user_id, create_time, update_time
+  </sql>
+
+  <select id="selectByUserID" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from miaosha_account
+    where user_id = #{userId,jdbcType=LONG}
+  </select>
+
+  <insert id="insertSelective" parameterType="com.travel.users.providers.entity.MiaoshaUserAccount" >
+    insert into miaosha_account
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="balanceAmount != null" >
+        balance_amount,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="balanceAmount != null" >
+        #{balanceAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=LONG},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByUserID" parameterType="com.travel.users.providers.entity.MiaoshaUserAccount" >
+    update miaosha_account
+    <set >
+      <if test="balanceAmount != null" >
+        balance_amount = balance_amount + #{balanceAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="transferAmount != null" >
+        transfer_amount = transfer_amount + #{transferAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=LONG}
+  </update>
+
+</mapper>
