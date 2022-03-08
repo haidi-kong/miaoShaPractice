@@ -74,21 +74,19 @@ public class OrderController {
 			//when tcc transaction is confirming status,
 			// the tcc transaction recovery will try to confirm the whole transaction to ensure eventually consistent.
 			log.error("支付失败 error:{}", confirmingException.getMessage());
-			result.error(ResultStatus.SYSTEM_ERROR);
-			return result;
+			return 	result.error(ResultStatus.SYSTEM_ERROR);
 		} catch (CancellingException cancellingException) {
 			log.error("支付失败 error:{}", cancellingException.getMessage());
 			//exception throws with the tcc transaction status is CANCELLING,
 			//when tcc transaction is under CANCELLING status,
 			// the tcc transaction recovery will try to cancel the whole transaction to ensure eventually consistent.
 			log.error("支付失败 error:{}", cancellingException.getMessage());
-			result.error(ResultStatus.SYSTEM_ERROR);
-			return result;
+			return result.error(ResultStatus.SYSTEM_ERROR);
 		} catch (Throwable e) {
 			//other exceptions throws at TRYING stage.
 			//you can retry or cancel the operation.
 			log.error("支付失败 error:{}", e.getMessage());
-			result.error(ResultStatus.SYSTEM_ERROR);
+			result.setData(e.getMessage());
 			return result;
 		}
 		return result;

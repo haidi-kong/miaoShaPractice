@@ -112,7 +112,7 @@ function pay(){
             payAmount:order.goodsPrice
         },
         success:function(data){
-            layer.msg(data.message);
+            layer.msg(data.data);
         },
         error:function(){
             layer.msg("客户端请求有误");
