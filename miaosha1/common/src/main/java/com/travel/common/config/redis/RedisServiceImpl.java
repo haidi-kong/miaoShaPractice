@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import com.alibaba.fastjson.JSON;
+import redis.clients.jedis.params.SetParams;
 
 /**
  * @auther luo
@@ -94,14 +95,25 @@ public class RedisServiceImpl<T> {
         }
     }
 
+    /**
+     EX seconds:将键的过期时间设置为 seconds 秒。
+     SET key value EX seconds 等同于 SETEX key seconds value
+     PX millisecounds:将键的过期时间设置为 milliseconds 毫秒。
+     SET key value PX milliseconds 等同于 PSETEX key milliseconds value
+     NX:只在键不存在的时候，才对键进行设置操作。
+     SET key value NX 等同于 SETNX key value
+     XX:只在键已经存在的时候，才对键进行设置操作
+     */
 
-    public boolean set(String key, String value, String nxxx, String expx, long time) {
+    public boolean setNX(String key, String value, int time) {
         Jedis jedis = null;
         try {
             jedis =  jedisPool.getResource();
             String result = "";
             if(jedis != null){
-                result = jedis.set(key, value, nxxx, expx, time);
+                SetParams params  = new SetParams();
+                params.nx().ex(time);
+                result = jedis.set(key, value, params);
 
             }
             if ("OK".equals(result)) {

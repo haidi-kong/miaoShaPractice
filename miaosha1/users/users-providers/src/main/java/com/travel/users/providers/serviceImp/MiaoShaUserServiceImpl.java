@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.mengyun.tcctransaction.api.Compensable;
 import org.mengyun.tcctransaction.api.TransactionContext;
+import org.mengyun.tcctransaction.dubbo.context.DubboTransactionContextEditor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -157,7 +158,7 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
     }
 
     @Override
-    @Compensable(confirmMethod = "confirmPay", cancelMethod = "cancelPay")
+    @Compensable(confirmMethod = "confirmPay", cancelMethod = "cancelPay", transactionContextEditor = DubboTransactionContextEditor.class)
     @Transactional
     /**
      * 支付订单 预留扣款资源
@@ -173,7 +174,7 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
             throw new AccountException("支付金额不足");
         }
         // 判断支付记录是否存在，try具有重试机制，需要幂等性
-        if (miaoshaPaymentDb != null) {
+        if (miaoshaPaymentDb == null) {
             // 账户欲扣款
             MiaoshaUserAccount miaoshaUserAccount = new MiaoshaUserAccount();
             miaoshaUserAccount.setUserId(user.getId());
@@ -228,7 +229,7 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
     /**
      * 支付订单 预留扣款资源
      */
-    public ResultGeekQ<MiaoShaUserVo> cancelPay(MiaoShaUser user, PaymentVo paymentVo) {
+    public ResultGeekQ<MiaoShaUserVo> cancelPay( MiaoShaUser user, PaymentVo paymentVo) {
         ResultGeekQ<MiaoShaUserVo> resultGeekQ  = ResultGeekQ.build();
         log.info("start tcc pay cancel, user:{}, paymentVo:{}, ", user, paymentVo);
         MiaoshaPayment miaoshaPaymentDb = miaoshaPaymentDao.selectByOrderID(paymentVo.getOrderId());

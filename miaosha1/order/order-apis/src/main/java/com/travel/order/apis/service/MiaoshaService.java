@@ -6,6 +6,7 @@ import com.travel.order.apis.entity.MiaoShaOrderVo;
 import com.travel.order.apis.entity.OrderInfoVo;
 import com.travel.users.apis.entity.MiaoShaUser;
 import com.travel.users.apis.entity.MiaoShaUserVo;
+import org.mengyun.tcctransaction.api.EnableTcc;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,5 +34,6 @@ public interface MiaoshaService {
 
     public ResultGeekQ<Long> miaoshaResult(MiaoShaUser user, long goodsId);
 
+    @EnableTcc
     public ResultGeekQ<Long> completeOrder(MiaoShaUser user, long orderId);
 }

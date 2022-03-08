@@ -60,19 +60,19 @@ public class OrderServiceCollector {
     public  void makePayment(MiaoShaUser user, PaymentVo paymentVo) {
         log.info("start tcc transaction try: {}", JSONObject.toJSONString(paymentVo));
         // 支付
-        miaoShaUserService.pay(user, paymentVo);
+        miaoShaUserService.pay( user, paymentVo);
         // 扣减库存和更新订单
         miaoshaService.completeOrder(user, paymentVo.getOrderId());
 
     }
 
-    public void confirmMakePayment(MiaoShaUser user, PaymentVo paymentVo, long orderId) {
+    public void confirmMakePayment(MiaoShaUser user, PaymentVo paymentVo) {
         log.info("start tcc transaction confirm: {}", JSONObject.toJSONString(paymentVo));
 
         //check if the trade order status is PAYING, if no, means another call confirmMakePayment happened, return directly, ensure idempotency.
     }
 
-    public void cancelMakePayment(MiaoShaUser user, PaymentVo paymentVo, long orderId) {
+    public void cancelMakePayment(MiaoShaUser user, PaymentVo paymentVo) {
         log.info("start tcc transaction cancel: {}", JSONObject.toJSONString(paymentVo));
 
     }

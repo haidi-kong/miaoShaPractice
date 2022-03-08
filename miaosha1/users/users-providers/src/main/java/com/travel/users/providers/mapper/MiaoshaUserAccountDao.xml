@@ -5,7 +5,7 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="balance_amount" property="balanceAmount" jdbcType="DECIMAL" />
     <result column="transfer_amount" property="transferAmount" jdbcType="DECIMAL" />
-    <result column="user_id" property="userId" jdbcType="LONG" />
+    <result column="user_id" property="userId" jdbcType="BIGINT" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
@@ -17,7 +17,7 @@
     select 
     <include refid="Base_Column_List" />
     from miaosha_account
-    where user_id = #{userId,jdbcType=LONG}
+    where user_id = #{userId,jdbcType=BIGINT}
   </select>
 
   <insert id="insertSelective" parameterType="com.travel.users.providers.entity.MiaoshaUserAccount" >
@@ -42,7 +42,7 @@
         #{balanceAmount,jdbcType=DECIMAL},
       </if>
       <if test="userId != null" >
-        #{userId,jdbcType=LONG},
+        #{userId,jdbcType=BIGINT},
       </if>
       <if test="createTime != null" >
         #{createTime,jdbcType=TIMESTAMP},
@@ -66,7 +66,7 @@
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where user_id = #{userId,jdbcType=LONG}
+    where user_id = #{userId,jdbcType=BIGINT}
   </update>
 
 </mapper>

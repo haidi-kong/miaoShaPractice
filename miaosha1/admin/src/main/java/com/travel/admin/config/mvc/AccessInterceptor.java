@@ -47,7 +47,7 @@ public class AccessInterceptor  implements HandlerInterceptor {
 		 * so 在这里进行 静态资源handler 排除
 		 */
 		if(handler instanceof ResourceHttpRequestHandler) {
-			log.info("---------ResourceHttpRequestHandler-------" + handler.toString() + "------------");
+			log.debug("---------ResourceHttpRequestHandler-------" + handler.toString() + "------------");
 		}else if(handler instanceof HandlerMethod) {
 			log.info("打印拦截方法handler ：{} ",handler);
 			// 统计网页总访问次数

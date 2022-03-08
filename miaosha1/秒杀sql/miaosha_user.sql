@@ -38,8 +38,8 @@ CREATE TABLE `miaosha_user` (
 DROP TABLE IF EXISTS `miaosha_account`;
 CREATE TABLE `miaosha_account` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增id',
-  `balance_amount` decimal(10,0) DEFAULT NULL COMMENT '账户余额',
-  `transfer_amount` decimal(10,0) DEFAULT 0 COMMENT '准备操作金额',
+  `balance_amount` decimal(18,4) DEFAULT NULL COMMENT '账户余额',
+  `transfer_amount` decimal(18,4) DEFAULT 0 COMMENT '准备操作金额',
   `user_id` bigint not NULL COMMENT '用户id',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
@@ -52,7 +52,7 @@ CREATE TABLE `miaosha_payment` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '创建时间',
   `user_id` bigint not NULL COMMENT '用户id',
   `miaosha_order_id` bigint(20) NOT NULL COMMENT '订单ID，只能支付一笔',
-  `amount` decimal(10,0) DEFAULT NULL COMMENT '支付金额',
+  `amount` decimal(18,4) DEFAULT NULL COMMENT '支付金额',
   `status` varchar(45) DEFAULT NULL COMMENT '支付状态',
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',

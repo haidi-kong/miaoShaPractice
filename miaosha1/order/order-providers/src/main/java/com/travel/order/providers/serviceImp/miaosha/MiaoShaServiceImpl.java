@@ -39,6 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.aspectj.weaver.ast.Or;
 import org.mengyun.tcctransaction.api.Compensable;
+import org.mengyun.tcctransaction.dubbo.context.DubboTransactionContextEditor;
 import org.springframework.amqp.AmqpException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -278,7 +279,8 @@ public class MiaoShaServiceImpl implements MiaoshaService {
             }
             //*********************getMiaoshaPath***********设置排队标记，超时时间根据业务情况决定，类似分布式锁 返回排队中   ************************
             String redisK =  CommonMethod.getMiaoshaOrderWaitFlagRedisKey(String.valueOf(user.getId()), String.valueOf(goodsId));
-            if (!redisClient.set(redisK,String.valueOf(goodsId), "NX", "EX", 5)) {
+            // 5s 分布式锁 nx
+            if (!redisClient.setNX(redisK,String.valueOf(goodsId), 5)) {
                 result.withError(ResultStatus.MIAOSHA_QUEUE_ING.getCode(), ResultStatus.MIAOSHA_QUEUE_ING.getMessage());
                 return result;
             }
@@ -362,7 +364,7 @@ public class MiaoShaServiceImpl implements MiaoshaService {
     }
 
     @Override
-    @Compensable(confirmMethod = "confirmCompleteOrder", cancelMethod = "cancelCompleteOrder")
+    @Compensable(confirmMethod = "confirmCompleteOrder", cancelMethod = "cancelCompleteOrder",transactionContextEditor = DubboTransactionContextEditor.class)
     @Transactional
     public ResultGeekQ<Long> completeOrder(MiaoShaUser user, long orderId) {
         ResultGeekQ<Long> resultGeekQ  = ResultGeekQ.build();

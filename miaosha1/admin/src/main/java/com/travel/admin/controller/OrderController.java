@@ -58,7 +58,7 @@ public class OrderController {
 
 	@PostMapping("/makePayment")
 	@ResponseBody
-	public ResultGeekQ<OrderDetailVo> pay(MiaoShaUser user, @Valid PaymentVo paymentVo) {
+	public ResultGeekQ<String> pay(MiaoShaUser user, @Valid PaymentVo paymentVo) {
 		ResultGeekQ result = ResultGeekQ.build();
 		if (user == null) {
 			result.withError(ResultStatus.SESSION_ERROR);
@@ -67,17 +67,23 @@ public class OrderController {
 
 		try {
 			orderServiceCollector.makePayment(user, paymentVo);
-
+			result.setData("支付成功");
 		} catch (ConfirmingException confirmingException) {
 			log.error("支付失败 error:{}", confirmingException.getMessage());
 			//exception throws with the tcc transaction status is CONFIRMING,
 			//when tcc transaction is confirming status,
 			// the tcc transaction recovery will try to confirm the whole transaction to ensure eventually consistent.
+			log.error("支付失败 error:{}", confirmingException.getMessage());
+			result.error(ResultStatus.SYSTEM_ERROR);
+			return result;
 		} catch (CancellingException cancellingException) {
 			log.error("支付失败 error:{}", cancellingException.getMessage());
 			//exception throws with the tcc transaction status is CANCELLING,
 			//when tcc transaction is under CANCELLING status,
 			// the tcc transaction recovery will try to cancel the whole transaction to ensure eventually consistent.
+			log.error("支付失败 error:{}", cancellingException.getMessage());
+			result.error(ResultStatus.SYSTEM_ERROR);
+			return result;
 		} catch (Throwable e) {
 			//other exceptions throws at TRYING stage.
 			//you can retry or cancel the operation.

@@ -11,7 +11,7 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = false)
 @Data
 public class MiaoshaPayment extends BaseDomain {
-    private int id;
+    private Integer id;
     private Long userId;
     private Long miaoshaOrderId;
     private BigDecimal amount;

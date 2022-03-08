@@ -3,6 +3,8 @@ package com.travel.users.apis.service;
 
 import com.travel.common.resultbean.ResultGeekQ;
 import com.travel.users.apis.entity.*;
+import org.mengyun.tcctransaction.api.Compensable;
+import org.mengyun.tcctransaction.api.EnableTcc;
 import org.mengyun.tcctransaction.api.TransactionContext;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,5 +27,6 @@ public interface MiaoShaUserService {
     /**
      * 支付订单
      */
+    @EnableTcc
     ResultGeekQ<MiaoShaUserVo> pay(MiaoShaUser user, PaymentVo paymentVo);
 }

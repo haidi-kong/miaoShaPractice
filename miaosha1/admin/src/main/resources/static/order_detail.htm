@@ -42,11 +42,8 @@
      	<td>订单状态</td>  
         <td id="orderStatus">
         </td>
-         <td id="payAmountTd">
-             <input id="payAmount" class="form-control"/>
-         </td>
         <td>
-        	<button class="btn btn-primary btn-block" type="submit" id="payButton">立即支付</button>
+        	<button class="btn btn-primary btn-block" type="submit" id="payButton" onclick="pay()">立即支付</button>
         </td>
      </tr>
       <tr>
@@ -62,9 +59,10 @@
 </body>
 </html>
 <script>
+    var order;
 function render(detail){
 	var goods = detail.goods;
-	var order = detail.order;
+    order = detail.order;
 	$("#goodsName").text(goods.goodsName);
 	$("#goodsImg").attr("src", goods.goodsImg);
 	$("#orderPrice").text(order.goodsPrice);
@@ -102,6 +100,24 @@ function getOrderDetail(){
 			layer.msg("客户端请求有误");
 		}
 	});
+}
+
+function pay(){
+    var orderId = g_getQueryString("orderId");
+    $.ajax({
+        url:"/order/makePayment",
+        type:"POST",
+        data:{
+            orderId:orderId,
+            payAmount:order.goodsPrice
+        },
+        success:function(data){
+            layer.msg(data.message);
+        },
+        error:function(){
+            layer.msg("客户端请求有误");
+        }
+    });
 }
 
 

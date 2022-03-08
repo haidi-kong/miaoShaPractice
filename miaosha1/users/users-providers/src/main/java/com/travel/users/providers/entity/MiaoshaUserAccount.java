@@ -10,7 +10,7 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = false)
 @Data
 public class MiaoshaUserAccount extends BaseDomain {
-    private int id;
+    private Integer id;
     private BigDecimal balanceAmount;
     private BigDecimal transferAmount;
     private Long userId;
