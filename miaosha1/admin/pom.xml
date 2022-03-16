@@ -21,6 +21,8 @@
     <properties>
         <revision>2.0</revision>
         <codeVersion>0.0.1-SNAPSHOT</codeVersion>
+        <docker.host>http://81.69.254.72:2275</docker.host>
+        <docker.maven.plugin.version>1.2.1</docker.maven.plugin.version>
     </properties>
 
     <dependencies>
@@ -138,6 +140,17 @@
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <!-- 指定该Main Class为全局的唯一入口 -->
+                        <mainClass>com.travel.admin.AdminApplication</mainClass>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>repackage</goal><!--可以把依赖的包都打包到生成的Jar包中-->
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -149,7 +162,7 @@
                         <encoding>UTF-8</encoding>
                     </configuration>
                 </plugin>
-           <!-- <plugin>
+            <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>${docker.maven.plugin.version}</version>
@@ -163,10 +176,10 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <imageName>miaosha1/${project.artifactId}:${project.version}</imageName>
+                    <imageName>miaosha1-${project.artifactId}:${project.version}</imageName>
                     <dockerHost>${docker.host}</dockerHost>
                     <baseImage>java:8</baseImage>
-                    <entryPoint>["java", "-jar", "-Dspring.profiles.active=prod","/${project.build.finalName}.jar"]
+                    <entryPoint>["java", "-jar", "-Xms128m", "-Xmx128m", "-Xmn64m", "-Dspring.profiles.active=prod","/${project.build.finalName}.jar"]
                     </entryPoint>
                     <resources>
                         <resource>
@@ -176,7 +189,7 @@
                         </resource>
                     </resources>
                 </configuration>
-            </plugin>-->
+            </plugin>
 
         </plugins>
 

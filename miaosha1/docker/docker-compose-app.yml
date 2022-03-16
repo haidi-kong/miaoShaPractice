@@ -1,13 +1,13 @@
 version: '3.3'
 services:
-  miaosha1:
-    image: miaosha1/web:0.0.1-SNAPSHOT
-    container_name: miaosha1
+  miaosha1-admin:
+    image: miaosha1-admin:0.0.1-SNAPSHOT
+    container_name: miaosha1-admin
     restart: always
     ports:
-      - 9080:8080
+      - 9082:9082
     volumes:
-      - /mydata/app/miaosha/logs:/var/logs
+      - /mydata/app/miaosha1-admin/logs:/var/logs
       - /etc/localtime:/etc/localtime
     environment:
       - 'TZ="Asia/Shanghai"'
@@ -16,4 +16,31 @@ services:
       - redis:myredis
       - zookeeper:myzookeeper #可以用db这个域名访问mysql服务
       - rabbitmq:myrabbitmq #可以用rabbit这个域名访问rabbitmq服务
-      - nacos-standalone:mynacos
+  miaosha1-order:
+    image: miaosha1-order-providers:0.0.1-SNAPSHOT
+    container_name: miaosha1-order
+    restart: always
+    volumes:
+      - /mydata/app/miaosha1-order/logs:/var/logs
+      - /etc/localtime:/etc/localtime
+    environment:
+      - 'TZ="Asia/Shanghai"'
+    external_links:
+      - mysql:mydb #可以用redis这个域名访问redis服务
+      - redis:myredis
+      - zookeeper:myzookeeper #可以用db这个域名访问mysql服务
+      - rabbitmq:myrabbitmq #可以用rabbit这个域名访问rabbitmq服务
+  miaosha1-users:
+    image: miaosha1-users-providers:0.0.1-SNAPSHOT
+    container_name: miaosha1-users
+    restart: always
+    volumes:
+      - /mydata/app/miaosha1-users/logs:/var/logs
+      - /etc/localtime:/etc/localtime
+    environment:
+      - 'TZ="Asia/Shanghai"'
+    external_links:
+      - mysql:mydb #可以用redis这个域名访问redis服务
+      - redis:myredis
+      - zookeeper:myzookeeper #可以用db这个域名访问mysql服务
+      - rabbitmq:myrabbitmq #可以用rabbit这个域名访问rabbitmq服务

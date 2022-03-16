@@ -21,6 +21,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <common.version>0.0.1-SNAPSHOT</common.version>
+    <docker.host>http://81.69.254.72:2275</docker.host>
+    <docker.maven.plugin.version>1.2.1</docker.maven.plugin.version>
   </properties>
 
   <dependencies>
@@ -37,6 +39,17 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <!-- 指定该Main Class为全局的唯一入口 -->
+          <mainClass>com.travel.order.providers.OrderApplication</mainClass>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal><!--可以把依赖的包都打包到生成的Jar包中-->
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -45,6 +58,34 @@
         <configuration>
           <source>8</source>
           <target>8</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.spotify</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>${docker.maven.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>build-image</id>
+            <phase>package</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <imageName>miaosha1-${project.artifactId}:${project.version}</imageName>
+          <dockerHost>${docker.host}</dockerHost>
+          <baseImage>java:8</baseImage>
+          <entryPoint>["java", "-jar", "-Xms128m", "-Xmx128m", "-Xmn64m", "-Dspring.profiles.active=prod","/${project.build.finalName}.jar"]
+          </entryPoint>
+          <resources>
+            <resource>
+              <targetPath>/</targetPath>
+              <directory>${project.build.directory}</directory>
+              <include>${project.build.finalName}.jar</include>
+            </resource>
+          </resources>
         </configuration>
       </plugin>
     </plugins>

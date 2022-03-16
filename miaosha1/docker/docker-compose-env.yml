@@ -49,6 +49,9 @@ services:
     container_name: nacos-standalone
     restart: always
     environment:
+      - JVM_XMS=512m
+      - JVM_XMX=512m
+      - JVM_XMN=256m
       - MODE=standalone
       - NACOS_SERVER_IP=81.69.254.72
     volumes:
