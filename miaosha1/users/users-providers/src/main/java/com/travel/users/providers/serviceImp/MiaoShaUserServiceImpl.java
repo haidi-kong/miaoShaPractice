@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.travel.users.apis.entity.PaymentVo;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -89,8 +90,6 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
                 resultGeekQ.withErrorCodeAndMessage(ResultStatus.PASSWORD_ERROR);
                 return resultGeekQ;
             }
-            //返回页面token
-            String token = UUIDUtil.getUUid();
             MiaoShaUser mSuser = new MiaoShaUser();
             BeanUtils.copyProperties(user,mSuser);
             resultGeekQ.setData(mSuser);
@@ -100,6 +99,29 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
             return resultGeekQ;
         }
         return resultGeekQ;
+    }
+
+    @Override
+    public String createToken(LoginVo loginVo){
+        if (loginVo == null) {
+            throw new AccountException("loginVo is empty");
+        }
+        String formPass = loginVo.getPassword();
+        ResultGeekQ<MiaoShaUserVo> userVo = getByPhoneId(loginVo.getMobile());
+        if (!ResultGeekQ.isSuccess(userVo)) {
+            throw new AccountException("userVo is empty");
+        }
+        MiaoShaUserVo user = userVo.getData();
+        String dbPass = user.getPassword();
+        String saltDB = user.getSalt(); // 123456
+
+        String calcPass = MD5Util.inputPassToDbPass(formPass, saltDB);
+        if (!calcPass.equals(dbPass)) {
+            throw new AccountException("password error");
+        }
+        //返回页面token
+        String token = UUIDUtil.getUUid();
+        return token;
     }
 
     @Override
@@ -158,7 +180,7 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
     }
 
     @Override
-    @Compensable(confirmMethod = "confirmPay", cancelMethod = "cancelPay", transactionContextEditor = DubboTransactionContextEditor.class)
+    //@Compensable(confirmMethod = "confirmPay", cancelMethod = "cancelPay", transactionContextEditor = DubboTransactionContextEditor.class)
     @Transactional
     /**
      * 支付订单 预留扣款资源
@@ -191,14 +213,14 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
             miaoshaPayment.setVersion(1);
             miaoshaPaymentDao.insertSelective(miaoshaPayment);
         }
-
+        confirmPay(user, paymentVo);
         return resultGeekQ;
     }
 
 
     @Transactional
     /**
-     * 支付订单 预留扣款资源
+     * 支付订单 扣款资源 更新订单已支付
      */
     public ResultGeekQ<MiaoShaUserVo> confirmPay(MiaoShaUser user, PaymentVo paymentVo) {
         ResultGeekQ<MiaoShaUserVo> resultGeekQ  = ResultGeekQ.build();

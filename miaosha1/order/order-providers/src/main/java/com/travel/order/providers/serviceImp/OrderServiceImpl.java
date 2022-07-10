@@ -9,6 +9,7 @@ import com.travel.order.apis.service.OrderService;
 import com.travel.order.providers.entity.miaosha.MiaoShaOrder;
 import com.travel.order.providers.entity.OrderInfo;
 import com.travel.order.providers.logic.MiaoShaLogic;
+import com.travel.order.providers.mapper.OrderInfoDao;
 import com.travel.users.apis.entity.MiaoShaUser;
 import com.travel.users.apis.entity.MiaoShaUserVo;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @Slf4j
 @DubboService(timeout = 9000000, cluster = "failfast")
@@ -24,6 +28,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private MiaoShaLogic mSLogic;
+
+    @Autowired
+    private OrderInfoDao orderInfoDao;
 
 
     @Override
@@ -81,6 +88,43 @@ public class OrderServiceImpl implements OrderService {
             return resultGeekQ;
         }catch(Exception e){
             log.error("***getOrderById***fail",e);
+            resultGeekQ.withErrorCodeAndMessage(ResultStatus.SYSTEM_ERROR);
+            return resultGeekQ;
+        }
+    }
+
+    public ResultGeekQ<OrderInfoVo> getOrderByUserId(Long userId){
+        ResultGeekQ<OrderInfoVo> resultGeekQ = ResultGeekQ.build();
+        try{
+            OrderInfo info = orderInfoDao.getOrderByUserId(userId);
+            if(info == null){
+                info = new OrderInfo();
+            }
+            OrderInfoVo infoVo = new OrderInfoVo();
+            BeanUtils.copyProperties(info,infoVo);
+            resultGeekQ.setData(infoVo);
+            return resultGeekQ;
+        }catch(Exception e){
+            log.error("***getOrderById***fail",e);
+            resultGeekQ.withErrorCodeAndMessage(ResultStatus.SYSTEM_ERROR);
+            return resultGeekQ;
+        }
+    }
+
+    public ResultGeekQ<List<OrderInfoVo>> getOrderList(){
+        ResultGeekQ<List<OrderInfoVo>> resultGeekQ = ResultGeekQ.build();
+        try{
+            List<OrderInfo> info = orderInfoDao.getOrderList();
+            List<OrderInfoVo> res = new ArrayList<>();
+            for (OrderInfo orderInfo : info) {
+                OrderInfoVo orderInfoVo = new OrderInfoVo();
+                BeanUtils.copyProperties(orderInfo,orderInfoVo);
+                res.add(orderInfoVo);
+            }
+            resultGeekQ.setData(res);
+            return resultGeekQ;
+        }catch(Exception e){
+            log.error("***getOrderList***fail",e);
             resultGeekQ.withErrorCodeAndMessage(ResultStatus.SYSTEM_ERROR);
             return resultGeekQ;
         }

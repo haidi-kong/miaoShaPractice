@@ -8,6 +8,8 @@ import com.travel.order.apis.entity.MiaoShaOrderVo;
 import com.travel.order.apis.entity.OrderInfoVo;
 import com.travel.users.apis.entity.MiaoShaUserVo;
 
+import java.util.List;
+
 /**
  * @author
  */
@@ -19,5 +21,9 @@ public interface OrderService {
     public ResultGeekQ<OrderInfoVo> createOrder(MiaoShaUserVo user, GoodsVo goods);
 
     public ResultGeekQ<OrderInfoVo> getOrderById(Long orderId);
+
+    public ResultGeekQ<List<OrderInfoVo>> getOrderList();
+
+    public ResultGeekQ<OrderInfoVo> getOrderByUserId(Long userId);
 
 }

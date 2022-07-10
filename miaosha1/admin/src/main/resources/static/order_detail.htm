@@ -112,7 +112,13 @@ function pay(){
             payAmount:order.goodsPrice
         },
         success:function(data){
-            layer.msg(data.data);
+            if(data.code === 0){
+                layer.msg(data.message);
+                setTimeout(function(){ window.location.href="/goods/to_list"}, 3000);
+
+            }else {
+                layer.msg(data.message);
+            }
         },
         error:function(){
             layer.msg("客户端请求有误");

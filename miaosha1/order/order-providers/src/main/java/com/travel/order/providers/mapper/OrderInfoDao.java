@@ -4,6 +4,8 @@ package com.travel.order.providers.mapper;
 import com.travel.order.providers.entity.OrderInfo;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface OrderInfoDao {
     int deleteByPrimaryKey(Long id);
 
@@ -17,5 +19,9 @@ public interface OrderInfoDao {
 
     int updateByPrimaryKey(OrderInfo record);
 
-    public OrderInfo getOrderById(@Param("orderId")long orderId);
+    OrderInfo getOrderById(@Param("orderId")long orderId);
+
+    OrderInfo getOrderByUserId(@Param("userId")long userId);
+
+    List<OrderInfo> getOrderList();
 }

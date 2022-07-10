@@ -97,7 +97,7 @@ public class MiaoShaServiceImpl implements MiaoshaService {
     private DataSourceTransactionManager transactionManager;
 
     @PostConstruct
-    public void init() throws Exception {
+    public void init() {
         ResultGeekQ<List<GoodsVo>> goodsListR = goodsService.goodsVoList();
         if (!ResultGeekQ.isSuccess(goodsListR)) {
             log.error("***系统初始化商品预热失败***");
@@ -364,7 +364,7 @@ public class MiaoShaServiceImpl implements MiaoshaService {
     }
 
     @Override
-    @Compensable(confirmMethod = "confirmCompleteOrder", cancelMethod = "cancelCompleteOrder",transactionContextEditor = DubboTransactionContextEditor.class)
+    //@Compensable(confirmMethod = "confirmCompleteOrder", cancelMethod = "cancelCompleteOrder",transactionContextEditor = DubboTransactionContextEditor.class)
     @Transactional
     public ResultGeekQ<Long> completeOrder(MiaoShaUser user, long orderId) {
         ResultGeekQ<Long> resultGeekQ  = ResultGeekQ.build();
@@ -385,6 +385,7 @@ public class MiaoShaServiceImpl implements MiaoshaService {
             orderInfoUpdate.setStatus(OrderStatus.ORDER_PAYING.getCode());
             orderInfoDao.updateByPrimaryKeySelective(orderInfoUpdate);
         }
+        confirmCompleteOrder(user, orderId);
         return resultGeekQ;
     }
 
@@ -406,7 +407,7 @@ public class MiaoShaServiceImpl implements MiaoshaService {
             // 实际扣减库存
             MiaoShaGoods miaoShaGoodsUpdate = new MiaoShaGoods();
             miaoShaGoodsUpdate.setGoodsId(orderInfo.getData().getGoodsId());
-            miaoShaGoodsfDao.reduceStock(miaoShaGoodsUpdate);
+            //miaoShaGoodsfDao.reduceStock(miaoShaGoodsUpdate);
         }
         return resultGeekQ;
     }

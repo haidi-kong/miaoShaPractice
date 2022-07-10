@@ -18,22 +18,61 @@ import org.apache.dubbo.config.annotation.DubboReference;
 import org.mengyun.tcctransaction.api.Compensable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 @Slf4j
 @Service
 public class OrderServiceCollector {
-    @DubboReference
+    @DubboReference(check = false)
     OrderService orderService;
 
-    @DubboReference
+    @DubboReference(check = false)
     GoodsService goodsService;
 
-    @DubboReference
+    @DubboReference(check = false)
     MiaoshaService miaoshaService;
 
-    @DubboReference
+    @DubboReference(check = false)
     private MiaoShaUserService miaoShaUserService;
+
+
+    public  ResultGeekQ<List<OrderDetailVo>> getOrderList() {
+        ResultGeekQ result = ResultGeekQ.build();
+        ResultGeekQ<List<OrderInfoVo>> orderR = orderService.getOrderList();
+        if(!ResultGeekQ.isSuccess(orderR)){
+            result.withError(orderR.getCode(),orderR.getMessage());
+            return result;
+        }
+        List<OrderInfoVo> orderList = orderR.getData();
+        List<OrderDetailVo> voList = new ArrayList<>();
+        for (OrderInfoVo orderInfoVo : orderList) {
+            OrderDetailVo vo = new OrderDetailVo();
+            Long goodsId = orderInfoVo.getGoodsId();
+            ResultGeekQ<GoodsVo> goodsR = goodsService.goodsVoByGoodId(goodsId);
+            if(!ResultGeekQ.isSuccess(goodsR)){
+                result.withError(orderR.getCode(),orderR.getMessage());
+                return result;
+            }
+            vo.setOrder(orderInfoVo);
+            vo.setGoods(goodsR.getData());
+            voList.add(vo);
+        }
+        result.setData(voList);
+        return result;
+    }
+
+    public  ResultGeekQ<Long> getOrderIdByUserId(Long userId) {
+        ResultGeekQ<Long> result = ResultGeekQ.build();
+        ResultGeekQ<OrderInfoVo> orderR = orderService.getOrderByUserId(userId);
+        if(!ResultGeekQ.isSuccess(orderR)){
+            result.withError(orderR.getCode(),orderR.getMessage());
+            return result;
+        }
+        result.setData(orderR.getData().getId());
+        return result;
+    }
 
     public  ResultGeekQ<OrderDetailVo> getOrderInfo(long orderId) {
         ResultGeekQ result = ResultGeekQ.build();
@@ -50,20 +89,20 @@ public class OrderServiceCollector {
         }
         OrderDetailVo vo = new OrderDetailVo();
         vo.setOrder(orderR.getData());
+
         vo.setGoods(goodsR.getData());
         result.setData(vo);
         return result;
     }
 
 
-    @Compensable(confirmMethod = "confirmMakePayment", cancelMethod = "cancelMakePayment", asyncConfirm = false)
-    public  void makePayment(MiaoShaUser user, PaymentVo paymentVo) {
+    //@Compensable(confirmMethod = "confirmMakePayment", cancelMethod = "cancelMakePayment", asyncConfirm = false)
+    public void makePayment(MiaoShaUser user, PaymentVo paymentVo) {
         log.info("start tcc transaction try: {}", JSONObject.toJSONString(paymentVo));
         // 支付
-        miaoShaUserService.pay( user, paymentVo);
+        miaoShaUserService.pay(user, paymentVo);
         // 扣减库存和更新订单
         miaoshaService.completeOrder(user, paymentVo.getOrderId());
-
     }
 
     public void confirmMakePayment(MiaoShaUser user, PaymentVo paymentVo) {

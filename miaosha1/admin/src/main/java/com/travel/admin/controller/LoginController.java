@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.security.auth.login.AccountException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -36,7 +37,7 @@ public class LoginController {
     private CookiesUtilService cookiesUtilService;
 
 
-    @DubboReference
+    @DubboReference(check = false)
     private MiaoShaUserService miaoShaUserService;
 
     @RequestMapping("/to_login")
@@ -98,6 +99,25 @@ public class LoginController {
             resultGeekQ.withErrorCodeAndMessage(ResultStatus.SYSTEM_ERROR);
         }
         return resultGeekQ;
+    }
+
+    @RequestMapping("/create_token")
+    @ResponseBody
+    public String createToken(LoginVo loginVo, HttpServletResponse response) throws AccountException {
+        log.info(loginVo.toString());
+        try {
+            ResultGeekQ<MiaoShaUser> result = miaoShaUserService.login(loginVo);
+            if(!AbstractResult.isSuccess(result)){
+                throw new AccountException("user error");
+            }
+            // 返回页面Cookie
+            String token = UUIDUtil.getUUid();
+            cookiesUtilService.addCookie(response, token, result.getData());
+            return token;
+        } catch (Exception e) {
+            throw new AccountException("user error");
+        }
+
     }
 
 }

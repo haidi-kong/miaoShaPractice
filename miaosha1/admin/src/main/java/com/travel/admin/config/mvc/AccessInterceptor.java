@@ -114,7 +114,7 @@ public class AccessInterceptor  implements HandlerInterceptor {
 	private MiaoShaUser getUser(HttpServletRequest request, HttpServletResponse response) {
 		String paramToken = request.getParameter(COOKIE_NAME_TOKEN);
 		String cookieToken = CookiesUtilService.getCookieValue(request, COOKIE_NAME_TOKEN);
-		if(StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(paramToken)) {
+ 		if(StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(paramToken)) {
 			return null;
 		}
 		String token = StringUtils.isEmpty(paramToken) ? cookieToken : paramToken;

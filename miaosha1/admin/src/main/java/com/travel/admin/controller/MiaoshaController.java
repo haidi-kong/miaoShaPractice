@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ import java.io.OutputStream;
 @Slf4j
 public class MiaoshaController {
 
-    @DubboReference
+    @DubboReference(check = false)
     MiaoshaService miaoshaService;
 
     @Autowired
@@ -57,7 +58,8 @@ public class MiaoshaController {
     @RequestMapping(value = "/{path}/confirm", method = RequestMethod.POST)
     @ResponseBody
     public ResultGeekQ<Integer> miaosha(MiaoShaUser user, @PathVariable("path") String path,
-                                        @RequestParam("goodsId") long goodsId) {
+                                        @RequestParam(value="goodsId", required=true)  long goodsId,
+                                        @RequestParam(value ="token", required=false) String token) {
         ResultGeekQ<Integer> result = ResultGeekQ.build();
         if (user == null) {
             result.withError(ResultStatus.SESSION_ERROR.getCode(), ResultStatus.SESSION_ERROR.getMessage());
@@ -67,10 +69,10 @@ public class MiaoshaController {
         MiaoShaUserVo userVo = new MiaoShaUserVo();
         BeanUtils.copyProperties(user, userVo);
         ResultGeekQ<Boolean> check = miaoshaService.checkPath(userVo, goodsId, path);
-        if (!ResultGeekQ.isSuccess(check)) {
-            result.withError(ResultStatus.REQUEST_ILLEGAL.getCode(), ResultStatus.REQUEST_ILLEGAL.getMessage());
-            return result;
-        }
+//        if (!ResultGeekQ.isSuccess(check)) {
+//            result.withError(ResultStatus.REQUEST_ILLEGAL.getCode(), ResultStatus.REQUEST_ILLEGAL.getMessage());
+//            return result;
+//        }
         return miaoshaService.miaoshaComfirm(user, goodsId);
     }
 

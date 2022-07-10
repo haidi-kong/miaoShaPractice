@@ -34,7 +34,7 @@ public class CookiesUtilService {
         Cookie[] cookies = request.getCookies();
         Optional cookiesV =  Optional.ofNullable(cookies);
         cookiesV.orElseGet(()->{
-            log.error(" ***cookies 为null! 请登录***");
+            log.warn(" ***cookies 为null! 请登录***");
             return null;
         });
 

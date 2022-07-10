@@ -28,7 +28,7 @@ import java.util.List;
 @Slf4j
 public class GoodsController extends BaseController {
 
-    @DubboReference
+    @DubboReference(check = false)
     private GoodsService goodsService;
 
     @UserCheckAndLimit(seconds = 5, maxCount = 5, needLogin = true)

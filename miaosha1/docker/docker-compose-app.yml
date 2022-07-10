@@ -8,7 +8,6 @@ services:
       - 9082:9082
     volumes:
       - /mydata/app/miaosha1-admin/logs:/var/logs
-      - /etc/localtime:/etc/localtime
     environment:
       - 'TZ="Asia/Shanghai"'
     external_links:
@@ -22,7 +21,6 @@ services:
     restart: always
     volumes:
       - /mydata/app/miaosha1-order/logs:/var/logs
-      - /etc/localtime:/etc/localtime
     environment:
       - 'TZ="Asia/Shanghai"'
     external_links:
@@ -36,7 +34,6 @@ services:
     restart: always
     volumes:
       - /mydata/app/miaosha1-users/logs:/var/logs
-      - /etc/localtime:/etc/localtime
     environment:
       - 'TZ="Asia/Shanghai"'
     external_links:

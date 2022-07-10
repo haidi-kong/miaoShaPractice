@@ -9,6 +9,7 @@ import org.mengyun.tcctransaction.api.TransactionContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 /**
  * @auther luo
@@ -27,6 +28,11 @@ public interface MiaoShaUserService {
     /**
      * 支付订单
      */
-    @EnableTcc
+    //@EnableTcc
     ResultGeekQ<MiaoShaUserVo> pay(MiaoShaUser user, PaymentVo paymentVo);
+
+    /**
+     * 生成登录token
+     */
+    String createToken(LoginVo loginVo);
 }

@@ -24,6 +24,11 @@
     from order_info
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="getOrderList" resultMap="BaseResultMap"  >
+    select
+    <include refid="Base_Column_List" />
+    from order_info order by create_date desc
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from order_info
     where id = #{id,jdbcType=BIGINT}
@@ -167,5 +172,12 @@
     <include refid="Base_Column_List" />
     from order_info
     where id = #{orderId,jdbcType=BIGINT}
+  </select>
+
+  <select id="getOrderByUserId" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from order_info
+    where user_id = #{userId,jdbcType=BIGINT}
   </select>
 </mapper>
