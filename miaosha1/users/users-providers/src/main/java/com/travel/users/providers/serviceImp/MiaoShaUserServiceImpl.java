@@ -22,8 +22,11 @@ import org.mengyun.tcctransaction.dubbo.context.DubboTransactionContextEditor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import com.travel.users.apis.entity.PaymentVo;
+import org.springframework.util.StopWatch;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.math.BigDecimal;
@@ -180,7 +183,9 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
     }
 
     @Override
-    //@Compensable(confirmMethod = "confirmPay", cancelMethod = "cancelPay", transactionContextEditor = DubboTransactionContextEditor.class)
+    @Compensable(confirmMethod = "confirmPay", cancelMethod = "cancelPay",
+            transactionContextEditor = DubboTransactionContextEditor.class,
+            asyncConfirm = true, asyncCancel = true)
     @Transactional
     /**
      * 支付订单 预留扣款资源
@@ -195,6 +200,8 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
                 || miaoshaUserAccountDb.getBalanceAmount().compareTo(paymentVo.getPayAmount()) < 0) {
             throw new AccountException("支付金额不足");
         }
+        StopWatch stopWatch = new StopWatch("并发用户: " + user.getId());
+        stopWatch.start("updateByUserID:" + user.getId());
         // 判断支付记录是否存在，try具有重试机制，需要幂等性
         if (miaoshaPaymentDb == null) {
             // 账户欲扣款
@@ -202,6 +209,8 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
             miaoshaUserAccount.setUserId(user.getId());
             miaoshaUserAccount.setTransferAmount(paymentVo.getPayAmount());
             miaoshaUserAccountDao.updateByUserID(miaoshaUserAccount);
+            stopWatch.stop();
+            stopWatch.start("insertSelective:" + user.getId());
             // 插入欲扣款记录
             MiaoshaPayment miaoshaPayment = new MiaoshaPayment();
             miaoshaPayment.setAmount(paymentVo.getPayAmount());
@@ -213,7 +222,9 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
             miaoshaPayment.setVersion(1);
             miaoshaPaymentDao.insertSelective(miaoshaPayment);
         }
-        confirmPay(user, paymentVo);
+        stopWatch.stop();
+        log.info(stopWatch.prettyPrint());
+        //confirmPay(user, paymentVo);
         return resultGeekQ;
     }
 
@@ -226,6 +237,8 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
         ResultGeekQ<MiaoShaUserVo> resultGeekQ  = ResultGeekQ.build();
         log.info("start tcc pay confirm, user:{}, paymentVo:{}, ", user, paymentVo);
         MiaoshaPayment miaoshaPaymentDb = miaoshaPaymentDao.selectByOrderID(paymentVo.getOrderId());
+        StopWatch stopWatch = new StopWatch("confirmPay: " + user.getId());
+        stopWatch.start("updateByUserID2:" + user.getId());
         // 防止超时等导致try事务悬挂  以及幂等
         if (miaoshaPaymentDb != null && Constants.PAY_DEALING.equals(miaoshaPaymentDb.getStatus())) {
             //账户确认扣款
@@ -236,13 +249,17 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
             miaoshaUserAccount.setUpdateTime(new Date());
             miaoshaUserAccountDao.updateByUserID(miaoshaUserAccount);
             // 更新扣款记录为成功 todo: 版本号控制 防止并发事务 具体根据事务隔离级别
+            stopWatch.stop();
+            stopWatch.start("insertSelective2:" + user.getId());
             MiaoshaPayment miaoshaPayment = new MiaoshaPayment();
             miaoshaPayment.setMiaoshaOrderId(paymentVo.getOrderId());
             miaoshaPayment.setUserId(user.getId());
             miaoshaPayment.setUpdateTime(new Date());
             miaoshaPayment.setStatus(Constants.PAY_SUCCESS);
             miaoshaPaymentDao.updateByUserID(miaoshaPayment);
+            stopWatch.stop();
         }
+        log.info(stopWatch.prettyPrint());
 
         return resultGeekQ;
     }

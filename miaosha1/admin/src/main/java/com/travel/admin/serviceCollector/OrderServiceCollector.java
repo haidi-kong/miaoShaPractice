@@ -17,6 +17,8 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.mengyun.tcctransaction.api.Compensable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -96,7 +98,8 @@ public class OrderServiceCollector {
     }
 
 
-    //@Compensable(confirmMethod = "confirmMakePayment", cancelMethod = "cancelMakePayment", asyncConfirm = false)
+    @Compensable(confirmMethod = "confirmMakePayment", cancelMethod = "cancelMakePayment",
+            asyncConfirm = true, asyncCancel = true)
     public void makePayment(MiaoShaUser user, PaymentVo paymentVo) {
         log.info("start tcc transaction try: {}", JSONObject.toJSONString(paymentVo));
         // 支付

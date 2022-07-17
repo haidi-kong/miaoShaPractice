@@ -47,8 +47,10 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.util.StopWatch;
 
 import javax.annotation.PostConstruct;
 import java.awt.image.BufferedImage;
@@ -364,7 +366,9 @@ public class MiaoShaServiceImpl implements MiaoshaService {
     }
 
     @Override
-    //@Compensable(confirmMethod = "confirmCompleteOrder", cancelMethod = "cancelCompleteOrder",transactionContextEditor = DubboTransactionContextEditor.class)
+    @Compensable(confirmMethod = "confirmCompleteOrder", cancelMethod = "cancelCompleteOrder",
+            transactionContextEditor = DubboTransactionContextEditor.class,
+            asyncCancel = true, asyncConfirm = true)
     @Transactional
     public ResultGeekQ<Long> completeOrder(MiaoShaUser user, long orderId) {
         ResultGeekQ<Long> resultGeekQ  = ResultGeekQ.build();
@@ -385,7 +389,7 @@ public class MiaoShaServiceImpl implements MiaoshaService {
             orderInfoUpdate.setStatus(OrderStatus.ORDER_PAYING.getCode());
             orderInfoDao.updateByPrimaryKeySelective(orderInfoUpdate);
         }
-        confirmCompleteOrder(user, orderId);
+        //confirmCompleteOrder(user, orderId);
         return resultGeekQ;
     }
 
@@ -394,8 +398,9 @@ public class MiaoShaServiceImpl implements MiaoshaService {
     @Transactional
     public ResultGeekQ<Long> confirmCompleteOrder(MiaoShaUser user, long orderId) {
         ResultGeekQ<Long> resultGeekQ  = ResultGeekQ.build();
-        log.info("start tcc completeOrder confirm, user:{}, orderId:{}", user, orderId);
+
         ResultGeekQ<OrderInfoVo> orderInfo = orderService.getOrderById(orderId);
+        log.info("start tcc completeOrder confirm, user:{}, orderId:{} status:{}", user, orderId, orderInfo.getStatus());
 
         // 订单状态改变 订单用来做幂等控制
         if (OrderStatus.ORDER_PAYING.getCode() == orderInfo.getData().getStatus()) {
@@ -404,10 +409,14 @@ public class MiaoShaServiceImpl implements MiaoshaService {
             orderInfoUpdate.setStatus(OrderStatus.ORDER_PYA_COMPLETE.getCode());
             orderInfoDao.updateByPrimaryKeySelective(orderInfoUpdate);
 
+            StopWatch stopWatch = new StopWatch("并发用户: " + user.getId());
+            stopWatch.start("reduceStock:" + user.getId());
             // 实际扣减库存
             MiaoShaGoods miaoShaGoodsUpdate = new MiaoShaGoods();
             miaoShaGoodsUpdate.setGoodsId(orderInfo.getData().getGoodsId());
-            //miaoShaGoodsfDao.reduceStock(miaoShaGoodsUpdate);
+            stopWatch.stop();
+            log.info(stopWatch.prettyPrint());
+            miaoShaGoodsfDao.reduceStock(miaoShaGoodsUpdate);
         }
         return resultGeekQ;
     }

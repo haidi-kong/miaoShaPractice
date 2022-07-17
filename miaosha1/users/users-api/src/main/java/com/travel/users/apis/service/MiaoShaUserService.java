@@ -28,7 +28,7 @@ public interface MiaoShaUserService {
     /**
      * 支付订单
      */
-    //@EnableTcc
+    @EnableTcc
     ResultGeekQ<MiaoShaUserVo> pay(MiaoShaUser user, PaymentVo paymentVo);
 
     /**

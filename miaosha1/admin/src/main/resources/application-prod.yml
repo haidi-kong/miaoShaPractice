@@ -23,8 +23,8 @@ spring:
     password: luozijing@2021
     jedis:
       pool:
-        max-active: 8
-        max-idle: 8
+        max-active: 100
+        max-idle: 100
         max-wait: -1
   rabbitmq:
     host: 42.192.183.193
