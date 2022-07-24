@@ -53,10 +53,21 @@ services:
       - JVM_XMX=512m
       - JVM_XMN=256m
       - MODE=standalone
-      - NACOS_SERVER_IP=81.69.254.72
+      - NACOS_SERVER_IP=42.192.183.193
     volumes:
       - /mydata/nacos/logs:/home/nacos/logs
       - /mydata/nacos/init.d/custom.properties:/home/nacos/init.d/custom.properties
     ports:
       - "8848:8848"
       - "9848:9848"
+  seata-server:
+    network_mode: "host"  # 与宿主机共有一个IP 解决注册到nacos上的Ip问题
+    image: seataio/seata-server:1.4.2
+    hostname: seata-server
+    command: redis-server /data/redis.conf --appendonly yes
+    environment:
+      - SEATA_PORT=8091
+      - SEATA_IP=42.192.183.193
+      - SEATA_CONFIG_NAME=file:/root/seata-config/registry
+    volumes:
+      - /mydata/seata/config:/root/seata-config

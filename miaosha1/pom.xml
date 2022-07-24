@@ -43,6 +43,7 @@
         <spring-boot.version>2.6.1</spring-boot.version>
         <revision>2.0</revision>
         <jedis.version>3.1.0</jedis.version>
+        <seata.version>1.4.2</seata.version>
     </properties>
 
     <dependencyManagement>
@@ -172,6 +173,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtool</artifactId>
             <version>${spring-boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.seata</groupId>
+            <artifactId>seata-spring-boot-starter</artifactId>
+            <version>${seata.version}</version>
         </dependency>
 
     </dependencies>

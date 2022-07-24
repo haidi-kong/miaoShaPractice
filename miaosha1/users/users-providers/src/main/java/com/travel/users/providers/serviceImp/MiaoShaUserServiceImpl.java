@@ -183,9 +183,9 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
     }
 
     @Override
-    @Compensable(confirmMethod = "confirmPay", cancelMethod = "cancelPay",
-            transactionContextEditor = DubboTransactionContextEditor.class,
-            asyncConfirm = true, asyncCancel = true)
+//    @Compensable(confirmMethod = "confirmPay", cancelMethod = "cancelPay",
+//            transactionContextEditor = DubboTransactionContextEditor.class,
+//            asyncConfirm = true, asyncCancel = true)
     @Transactional
     /**
      * 支付订单 预留扣款资源
@@ -196,6 +196,7 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
         MiaoshaPayment miaoshaPaymentDb = miaoshaPaymentDao.selectByOrderID(paymentVo.getOrderId());
         MiaoshaUserAccount miaoshaUserAccountDb = miaoshaUserAccountDao.selectByUserID(user.getId());
         // 金额是否足够用
+        //int a = 1 / 0;
         if (miaoshaUserAccountDb.getBalanceAmount() == null
                 || miaoshaUserAccountDb.getBalanceAmount().compareTo(paymentVo.getPayAmount()) < 0) {
             throw new AccountException("支付金额不足");
@@ -224,7 +225,7 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
         }
         stopWatch.stop();
         log.info(stopWatch.prettyPrint());
-        //confirmPay(user, paymentVo);
+        confirmPay(user, paymentVo);
         return resultGeekQ;
     }
 
