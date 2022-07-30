@@ -1,5 +1,6 @@
 package com.travel.users.providers.serviceImp;
 
+import com.alibaba.fastjson.JSONObject;
 import com.travel.common.enums.ResultStatus;
 import com.travel.common.resultbean.ResultGeekQ;
 import com.travel.common.utils.MD5Util;
@@ -14,6 +15,8 @@ import com.travel.users.providers.mapper.MiaoShaUserDao;
 import com.travel.users.providers.mapper.MiaoshaPaymentDao;
 import com.travel.users.providers.mapper.MiaoshaUserAccountDao;
 import com.travel.users.providers.utils.Constants;
+import io.seata.rm.tcc.api.BusinessActionContext;
+import io.seata.rm.tcc.api.TwoPhaseBusinessAction;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.mengyun.tcctransaction.api.Compensable;
@@ -186,6 +189,8 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
 //    @Compensable(confirmMethod = "confirmPay", cancelMethod = "cancelPay",
 //            transactionContextEditor = DubboTransactionContextEditor.class,
 //            asyncConfirm = true, asyncCancel = true)
+
+    //@TwoPhaseBusinessAction( name = "DubboTccActionOne", commitMethod  = "confirmPay", rollbackMethod  = "cancelPay")
     @Transactional
     /**
      * 支付订单 预留扣款资源
@@ -225,7 +230,7 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
         }
         stopWatch.stop();
         log.info(stopWatch.prettyPrint());
-        confirmPay(user, paymentVo);
+        //confirmPay(user, paymentVo);
         return resultGeekQ;
     }
 
@@ -234,8 +239,11 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
     /**
      * 支付订单 扣款资源 更新订单已支付
      */
-    public ResultGeekQ<MiaoShaUserVo> confirmPay(MiaoShaUser user, PaymentVo paymentVo) {
+    public boolean confirmPay(BusinessActionContext actionContext) {
         ResultGeekQ<MiaoShaUserVo> resultGeekQ  = ResultGeekQ.build();
+        MiaoShaUser user = JSONObject.parseObject(((JSONObject)actionContext.getActionContext("user")).toString(), MiaoShaUser.class);
+        PaymentVo paymentVo = JSONObject.parseObject(((JSONObject)actionContext.getActionContext("paymentVo")).toString(), PaymentVo.class);
+
         log.info("start tcc pay confirm, user:{}, paymentVo:{}, ", user, paymentVo);
         MiaoshaPayment miaoshaPaymentDb = miaoshaPaymentDao.selectByOrderID(paymentVo.getOrderId());
         StopWatch stopWatch = new StopWatch("confirmPay: " + user.getId());
@@ -262,15 +270,19 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
         }
         log.info(stopWatch.prettyPrint());
 
-        return resultGeekQ;
+        return true;
     }
 
     @Transactional
     /**
      * 支付订单 预留扣款资源
      */
-    public ResultGeekQ<MiaoShaUserVo> cancelPay( MiaoShaUser user, PaymentVo paymentVo) {
+    public boolean  cancelPay(BusinessActionContext actionContext) {
         ResultGeekQ<MiaoShaUserVo> resultGeekQ  = ResultGeekQ.build();
+        MiaoShaUser user = JSONObject.parseObject(((JSONObject)actionContext.getActionContext("user")).toString(), MiaoShaUser.class);
+        PaymentVo paymentVo = JSONObject.parseObject(((JSONObject)actionContext.getActionContext("paymentVo")).toString(), PaymentVo.class);
+
+
         log.info("start tcc pay cancel, user:{}, paymentVo:{}, ", user, paymentVo);
         MiaoshaPayment miaoshaPaymentDb = miaoshaPaymentDao.selectByOrderID(paymentVo.getOrderId());
         // 防止超时等导致try事务悬挂 以及幂等
@@ -289,7 +301,7 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
             miaoshaPayment.setStatus(Constants.PAY_FAILED);
             miaoshaPaymentDao.updateByUserID(miaoshaPayment);
         }
-        return resultGeekQ;
+        return true;
     }
 
     private ResultGeekQ<MiaoShaUserVo> getByNameOrPhone(String name, Long id) {

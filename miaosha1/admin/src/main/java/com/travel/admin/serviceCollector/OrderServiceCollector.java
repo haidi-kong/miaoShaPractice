@@ -12,6 +12,7 @@ import com.travel.order.apis.service.OrderService;
 import com.travel.users.apis.entity.MiaoShaUser;
 import com.travel.users.apis.entity.PaymentVo;
 import com.travel.users.apis.service.MiaoShaUserService;
+import io.seata.rm.tcc.api.TwoPhaseBusinessAction;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -101,7 +102,8 @@ public class OrderServiceCollector {
 
 //    @Compensable(confirmMethod = "confirmMakePayment", cancelMethod = "cancelMakePayment",
 //            asyncConfirm = true, asyncCancel = true)
-    @GlobalTransactional(timeoutMills = 300000, name = "business-seata-example")
+    //@GlobalTransactional(timeoutMills = 300000, name = "business-seata-example")
+    @GlobalTransactional
     public void makePayment(MiaoShaUser user, PaymentVo paymentVo) {
         log.info("start  transaction : {}", JSONObject.toJSONString(paymentVo));
         // 支付

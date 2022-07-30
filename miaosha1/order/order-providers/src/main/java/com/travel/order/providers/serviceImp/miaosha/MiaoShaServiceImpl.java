@@ -1,6 +1,7 @@
 package com.travel.order.providers.serviceImp.miaosha;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.travel.common.config.redis.RedisServiceImpl;
 import com.travel.common.config.zk.ZkApi;
 import com.travel.common.enums.CustomerConstant;
@@ -35,6 +36,8 @@ import com.travel.order.providers.utils.ValidMSTime;
 import com.travel.order.providers.utils.enums.OrderStatus;
 import com.travel.users.apis.entity.MiaoShaUser;
 import com.travel.users.apis.entity.MiaoShaUserVo;
+import io.seata.rm.tcc.api.BusinessActionContext;
+import io.seata.rm.tcc.api.TwoPhaseBusinessAction;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 import org.aspectj.weaver.ast.Or;
@@ -366,9 +369,7 @@ public class MiaoShaServiceImpl implements MiaoshaService {
     }
 
     @Override
-//    @Compensable(confirmMethod = "confirmCompleteOrder", cancelMethod = "cancelCompleteOrder",
-//            transactionContextEditor = DubboTransactionContextEditor.class,
-//            asyncCancel = true, asyncConfirm = true)
+    //@TwoPhaseBusinessAction(name = "DubboTccActionTwo", commitMethod  = "confirmCompleteOrder", rollbackMethod  = "cancelCompleteOrder")
     @Transactional
     public ResultGeekQ<Long> completeOrder(MiaoShaUser user, long orderId) {
         ResultGeekQ<Long> resultGeekQ  = ResultGeekQ.build();
@@ -389,15 +390,17 @@ public class MiaoShaServiceImpl implements MiaoshaService {
             orderInfoUpdate.setStatus(OrderStatus.ORDER_PAYING.getCode());
             orderInfoDao.updateByPrimaryKeySelective(orderInfoUpdate);
         }
-        confirmCompleteOrder(user, orderId);
+        //confirmCompleteOrder(user, orderId);
         return resultGeekQ;
     }
 
 
 
     @Transactional
-    public ResultGeekQ<Long> confirmCompleteOrder(MiaoShaUser user, long orderId) {
+    public boolean confirmCompleteOrder(BusinessActionContext actionContext) {
         ResultGeekQ<Long> resultGeekQ  = ResultGeekQ.build();
+        Long orderId = new Long(actionContext.getActionContext("orderId").toString());
+        MiaoShaUser user = (MiaoShaUser) JSONObject.parseObject(((JSONObject)actionContext.getActionContext("user")).toString(), MiaoShaUser.class);
 
         ResultGeekQ<OrderInfoVo> orderInfo = orderService.getOrderById(orderId);
         log.info("start tcc completeOrder confirm, user:{}, orderId:{} status:{}", user, orderId, orderInfo.getStatus());
@@ -418,12 +421,14 @@ public class MiaoShaServiceImpl implements MiaoshaService {
             log.info(stopWatch.prettyPrint());
             miaoShaGoodsfDao.reduceStock(miaoShaGoodsUpdate);
         }
-        return resultGeekQ;
+        return true;
     }
 
     @Transactional
-    public ResultGeekQ<Long> cancelCompleteOrder(MiaoShaUser user, long orderId) {
+    public boolean cancelCompleteOrder(BusinessActionContext actionContext) {
         ResultGeekQ<Long> resultGeekQ  = ResultGeekQ.build();
+        Long orderId = (Long) actionContext.getActionContext("orderId");
+        MiaoShaUser user = JSONObject.parseObject(((JSONObject)actionContext.getActionContext("user")).toString(), MiaoShaUser.class);
         log.info("start tcc completeOrder cancel, user:{}, orderId:{}", user, orderId);
         ResultGeekQ<OrderInfoVo> orderInfo = orderService.getOrderById(orderId);
 
@@ -434,7 +439,7 @@ public class MiaoShaServiceImpl implements MiaoshaService {
             orderInfoUpdate.setStatus(OrderStatus.ORDER_PYA_CANCEL.getCode());
             orderInfoDao.updateByPrimaryKeySelective(orderInfoUpdate);
         }
-        return resultGeekQ;
+        return true;
     }
 
     private MiaoShaOrder get(List<MiaoShaOrder> orders, Long userId) {

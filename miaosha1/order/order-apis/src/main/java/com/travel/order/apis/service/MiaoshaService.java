@@ -6,6 +6,10 @@ import com.travel.order.apis.entity.MiaoShaOrderVo;
 import com.travel.order.apis.entity.OrderInfoVo;
 import com.travel.users.apis.entity.MiaoShaUser;
 import com.travel.users.apis.entity.MiaoShaUserVo;
+import io.seata.rm.tcc.api.BusinessActionContext;
+import io.seata.rm.tcc.api.BusinessActionContextParameter;
+import io.seata.rm.tcc.api.LocalTCC;
+import io.seata.rm.tcc.api.TwoPhaseBusinessAction;
 import org.mengyun.tcctransaction.api.EnableTcc;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.awt.image.BufferedImage;
 
+@LocalTCC
 public interface MiaoshaService {
     public ResultGeekQ<OrderInfoVo> miaosha(MiaoShaUserVo user, GoodsVo goods);
 
@@ -35,5 +40,12 @@ public interface MiaoshaService {
     public ResultGeekQ<Long> miaoshaResult(MiaoShaUser user, long goodsId);
 
     //@EnableTcc
-    public ResultGeekQ<Long> completeOrder(MiaoShaUser user, long orderId);
+    @TwoPhaseBusinessAction(name = "DubboTccActionTwo", commitMethod  = "confirmCompleteOrder", rollbackMethod  = "cancelCompleteOrder")
+    ResultGeekQ<Long> completeOrder(@BusinessActionContextParameter(paramName = "user") MiaoShaUser user,
+                                    @BusinessActionContextParameter(paramName = "orderId")long orderId);
+
+    boolean confirmCompleteOrder(BusinessActionContext actionContext);
+
+    boolean cancelCompleteOrder(BusinessActionContext actionContext);
+
 }
