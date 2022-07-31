@@ -1,6 +1,7 @@
 package com.travel.users.providers.config.datasource;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import io.seata.rm.datasource.xa.DataSourceProxyXA;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,5 +37,10 @@ public class MysqlConfig {
         dataSource.setInitialSize(6);
         return dataSource;
     }
- 
+
+    @Bean("dataSourceProxy")
+    public DataSource dataSource(DruidDataSource druidDataSource) {
+        // DataSourceProxyXA for XA mode
+        return new DataSourceProxyXA(druidDataSource);
+    }
 }
