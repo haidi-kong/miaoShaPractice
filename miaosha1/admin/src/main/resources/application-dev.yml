@@ -56,6 +56,7 @@ dubbo:
 
 seata:
   enabled: true
+  data-source-proxy-mode: XA
   application-id: business-seata-example
   tx-service-group: my_test_tx_group # 事务群组（可以每个应用独立取名，也可以使用相同的名字）
   client:

@@ -40,10 +40,10 @@ public class MysqlConfig {
     }
 
 
-    @Bean("dataSourceProxy")
-    public DataSource dataSource(DruidDataSource druidDataSource) {
-        // DataSourceProxyXA for XA mode
-        return new DataSourceProxyXA(druidDataSource);
-    }
+//    @Bean("dataSourceProxy")
+//    public DataSource dataSource(DruidDataSource druidDataSource) {
+//        // DataSourceProxyXA for XA mode
+//        return new DataSourceProxyXA(druidDataSource);
+//    }
  
 }
