@@ -55,6 +55,7 @@ dubbo:
 
 #====================================Seata Config===============================================
 seata:
+  enable-auto-data-source-proxy: false
   enabled: true
   application-id: order-seata-example
   tx-service-group: my_test_tx_group # 事务群组（可以每个应用独立取名，也可以使用相同的名字）

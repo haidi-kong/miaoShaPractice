@@ -37,7 +37,7 @@ public class LoginController {
     private CookiesUtilService cookiesUtilService;
 
 
-    @DubboReference(check = false)
+    @Autowired
     private MiaoShaUserService miaoShaUserService;
 
     @RequestMapping("/to_login")

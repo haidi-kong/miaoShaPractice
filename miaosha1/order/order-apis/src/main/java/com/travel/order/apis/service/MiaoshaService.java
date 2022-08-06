@@ -35,5 +35,7 @@ public interface MiaoshaService {
     public ResultGeekQ<Long> miaoshaResult(MiaoShaUser user, long goodsId);
 
     //@EnableTcc
-    public ResultGeekQ<Long> completeOrder(MiaoShaUser user, long orderId);
+    public boolean completeOrder(MiaoShaUser user, long orderId);
+
+    public boolean cancelCompleteOrder(MiaoShaUser user, long orderId);
 }

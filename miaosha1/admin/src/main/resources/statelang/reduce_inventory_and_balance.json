@@ -1,0 +1,100 @@
+{
+  "Name": "reduceInventoryAndBalance",
+  "Comment": "reduce inventory then reduce balance in a transaction",
+  "StartState": "ReduceInventory",
+  "Version": "0.0.1",
+  "States": {
+    "ReduceInventory": {
+      "Type": "ServiceTask",
+      "ServiceName": "miaoshaService",
+      "ServiceMethod": "completeOrder",
+      "CompensateState": "CompensateReduceInventory",
+      "Next": "ChoiceState",
+      "ParameterTypes" : ["com.travel.users.apis.entity.MiaoShaUser", "long"],
+      "Input": [
+        "$.[user]",
+        "$.[orderId]"
+      ],
+      "Output": {
+        "reduceInventoryResult": "$.#root"
+      },
+      "Status": {
+        "#root == true": "SU",
+        "#root == false": "FA",
+        "$Exception{java.lang.Throwable}": "UN"
+      }
+    },
+    "ChoiceState": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Expression": "[reduceInventoryResult] == true",
+          "Next": "ReduceBalance"
+        }
+      ],
+      "Default": "Fail"
+    },
+    "ReduceBalance": {
+      "Type": "ServiceTask",
+      "ServiceName": "miaoShaUserService",
+      "ServiceMethod": "pay",
+      "CompensateState": "CompensateReduceBalance",
+      "ParameterTypes" : ["com.travel.users.apis.entity.MiaoShaUser", "com.travel.users.apis.entity.PaymentVo"],
+      "Input": [
+        "$.[user]",
+        "$.[paymentVo]",
+        {
+          "throwException": "$.[mockReduceBalanceFail]"
+        }
+      ],
+      "Output": {
+        "compensateReduceBalanceResult": "$.#root"
+      },
+      "Status": {
+        "#root == true": "SU",
+        "#root == false": "FA",
+        "$Exception{java.lang.Throwable}": "UN"
+      },
+      "Catch": [
+        {
+          "Exceptions": [
+            "java.lang.Throwable"
+          ],
+          "Next": "CompensationTrigger"
+        }
+      ],
+      "Next": "Succeed"
+    },
+    "CompensateReduceInventory": {
+      "Type": "ServiceTask",
+      "ServiceName": "miaoshaService",
+      "ServiceMethod": "cancelCompleteOrder",
+      "Input": [
+        "$.[user]",
+        "$.[orderId]"
+      ]
+    },
+    "CompensateReduceBalance": {
+      "Type": "ServiceTask",
+      "ServiceName": "miaoShaUserService",
+      "ServiceMethod": "cancelPay",
+      "ParameterTypes" : ["com.travel.users.apis.entity.MiaoShaUser", "com.travel.users.apis.entity.PaymentVo"],
+      "Input": [
+        "$.[user]",
+        "$.[paymentVo]"
+      ]
+    },
+    "CompensationTrigger": {
+      "Type": "CompensationTrigger",
+      "Next": "Fail"
+    },
+    "Succeed": {
+      "Type": "Succeed"
+    },
+    "Fail": {
+      "Type": "Fail",
+      "ErrorCode": "PURCHASE_FAILED",
+      "Message": "purchase failed"
+    }
+  }
+}

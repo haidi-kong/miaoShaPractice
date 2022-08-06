@@ -29,7 +29,9 @@ public interface MiaoShaUserService {
      * 支付订单
      */
     //@EnableTcc
-    ResultGeekQ<MiaoShaUserVo> pay(MiaoShaUser user, PaymentVo paymentVo);
+    boolean pay(MiaoShaUser user, PaymentVo paymentVo);
+
+    boolean cancelPay(MiaoShaUser user, PaymentVo paymentVo);
 
     /**
      * 生成登录token

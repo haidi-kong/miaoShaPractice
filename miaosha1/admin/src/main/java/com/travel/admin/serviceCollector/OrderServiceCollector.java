@@ -12,18 +12,20 @@ import com.travel.order.apis.service.OrderService;
 import com.travel.users.apis.entity.MiaoShaUser;
 import com.travel.users.apis.entity.PaymentVo;
 import com.travel.users.apis.service.MiaoShaUserService;
+import io.seata.saga.engine.StateMachineEngine;
+import io.seata.saga.statelang.domain.ExecutionStatus;
+import io.seata.saga.statelang.domain.StateMachineInstance;
 import io.seata.spring.annotation.GlobalTransactional;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.mengyun.tcctransaction.api.Compensable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -34,11 +36,14 @@ public class OrderServiceCollector {
     @DubboReference(check = false)
     GoodsService goodsService;
 
-    @DubboReference(check = false)
+    @Autowired
     MiaoshaService miaoshaService;
 
-    @DubboReference(check = false)
-    private MiaoShaUserService miaoShaUserService;
+    @Autowired
+    MiaoShaUserService miaoShaUserService;
+
+    @Autowired
+    StateMachineEngine stateMachineEngine;
 
 
     public  ResultGeekQ<List<OrderDetailVo>> getOrderList() {
@@ -101,15 +106,16 @@ public class OrderServiceCollector {
 
 //    @Compensable(confirmMethod = "confirmMakePayment", cancelMethod = "cancelMakePayment",
 //            asyncConfirm = true, asyncCancel = true)
-    @GlobalTransactional(timeoutMills = 300000, name = "business-seata-example")
-    public void makePayment(MiaoShaUser user, PaymentVo paymentVo) {
-        log.info("start  transaction : {}", JSONObject.toJSONString(paymentVo));
-        // 支付
-        miaoShaUserService.pay(user, paymentVo);
-        // 扣减库存和更新订单
-        miaoshaService.completeOrder(user, paymentVo.getOrderId());
-        log.info("complete  transaction : {}", JSONObject.toJSONString(paymentVo));
-    }
+    //@GlobalTransactional(timeoutMills = 300000, name = "business-seata-example")
+//    public void makePayment(MiaoShaUser user, PaymentVo paymentVo) {
+//        log.info("start  transaction : {}", JSONObject.toJSONString(paymentVo));
+//        // 扣减库存和更新订单
+//        miaoshaService.completeOrder(user, paymentVo.getOrderId());
+//        // 支付
+//        miaoShaUserService.pay(user, paymentVo);
+//
+//        log.info("complete  transaction : {}", JSONObject.toJSONString(paymentVo));
+//    }
 
     public void confirmMakePayment(MiaoShaUser user, PaymentVo paymentVo) {
         log.info("start tcc transaction confirm: {}", JSONObject.toJSONString(paymentVo));
@@ -119,6 +125,50 @@ public class OrderServiceCollector {
 
     public void cancelMakePayment(MiaoShaUser user, PaymentVo paymentVo) {
         log.info("start tcc transaction cancel: {}", JSONObject.toJSONString(paymentVo));
+
+    }
+
+    public boolean pay(MiaoShaUser user, PaymentVo paymentVo) {
+        miaoShaUserService.pay(user, paymentVo);
+        return true;
+        //check if the trade order status is PAYING, if no, means another call confirmMakePayment happened, return directly, ensure idempotency.
+    }
+
+    public boolean cancelPay(MiaoShaUser user, PaymentVo paymentVo) {
+        log.info("start tcc transaction cancel: {}", JSONObject.toJSONString(paymentVo));
+        return true;
+    }
+
+    public boolean completeOrder(MiaoShaUser user, long orderId) {
+        miaoshaService.completeOrder(user, orderId);
+        return true;
+    }
+
+    public boolean cancelCompleteOrder(MiaoShaUser user, long orderId) {
+        miaoshaService.cancelCompleteOrder(user, orderId);
+        return true;
+    }
+
+
+
+
+    public void makePayment(MiaoShaUser user, PaymentVo paymentVo) {
+        log.info("start  transaction : {}", JSONObject.toJSONString(paymentVo));
+        Map<String, Object> startParams = new HashMap<>(3);
+        //唯一健
+        String businessKey = String.valueOf(System.currentTimeMillis());
+        startParams.put("user", user);
+        startParams.put("orderId", paymentVo.getOrderId());
+        startParams.put("paymentVo", paymentVo);
+
+        //同步执行
+        StateMachineInstance inst = stateMachineEngine.startWithBusinessKey("reduceInventoryAndBalance", null, businessKey, startParams);
+
+        if(ExecutionStatus.SU.equals(inst.getStatus())){
+            log.info("complete  transaction,saga transaction execute Succeed. XID: " + inst.getId());
+        }else{
+            log.error("failed  transaction ,saga transaction execute failed. XID: " + inst.getId());
+        }
 
     }
 }

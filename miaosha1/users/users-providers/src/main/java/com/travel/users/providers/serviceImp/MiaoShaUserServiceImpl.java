@@ -190,7 +190,7 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
     /**
      * 支付订单 预留扣款资源
      */
-    public ResultGeekQ<MiaoShaUserVo> pay(MiaoShaUser user, PaymentVo paymentVo) {
+    public boolean pay(MiaoShaUser user, PaymentVo paymentVo) {
         ResultGeekQ<MiaoShaUserVo> resultGeekQ  = ResultGeekQ.build();
         log.info("start tcc pay try, user:{}, paymentVo:{}", user, paymentVo);
         MiaoshaPayment miaoshaPaymentDb = miaoshaPaymentDao.selectByOrderID(paymentVo.getOrderId());
@@ -226,7 +226,7 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
         stopWatch.stop();
         log.info(stopWatch.prettyPrint());
         confirmPay(user, paymentVo);
-        return resultGeekQ;
+        return true;
     }
 
 
@@ -269,7 +269,7 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
     /**
      * 支付订单 预留扣款资源
      */
-    public ResultGeekQ<MiaoShaUserVo> cancelPay( MiaoShaUser user, PaymentVo paymentVo) {
+    public boolean cancelPay( MiaoShaUser user, PaymentVo paymentVo) {
         ResultGeekQ<MiaoShaUserVo> resultGeekQ  = ResultGeekQ.build();
         log.info("start tcc pay cancel, user:{}, paymentVo:{}, ", user, paymentVo);
         MiaoshaPayment miaoshaPaymentDb = miaoshaPaymentDao.selectByOrderID(paymentVo.getOrderId());
@@ -289,7 +289,7 @@ public class MiaoShaUserServiceImpl implements MiaoShaUserService {
             miaoshaPayment.setStatus(Constants.PAY_FAILED);
             miaoshaPaymentDao.updateByUserID(miaoshaPayment);
         }
-        return resultGeekQ;
+        return true;
     }
 
     private ResultGeekQ<MiaoShaUserVo> getByNameOrPhone(String name, Long id) {

@@ -27,7 +27,7 @@ import java.io.OutputStream;
 @Slf4j
 public class MiaoshaController {
 
-    @DubboReference(check = false)
+    @Autowired
     MiaoshaService miaoshaService;
 
     @Autowired

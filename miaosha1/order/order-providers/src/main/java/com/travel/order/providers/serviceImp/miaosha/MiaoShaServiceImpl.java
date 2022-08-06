@@ -370,7 +370,7 @@ public class MiaoShaServiceImpl implements MiaoshaService {
 //            transactionContextEditor = DubboTransactionContextEditor.class,
 //            asyncCancel = true, asyncConfirm = true)
     @Transactional
-    public ResultGeekQ<Long> completeOrder(MiaoShaUser user, long orderId) {
+    public boolean completeOrder(MiaoShaUser user, long orderId) {
         ResultGeekQ<Long> resultGeekQ  = ResultGeekQ.build();
         log.info("start tcc completeOrder try, user:{}, orderId:{}", user, orderId);
         ResultGeekQ<OrderInfoVo> orderInfo = orderService.getOrderById(orderId);
@@ -390,7 +390,7 @@ public class MiaoShaServiceImpl implements MiaoshaService {
             orderInfoDao.updateByPrimaryKeySelective(orderInfoUpdate);
         }
         confirmCompleteOrder(user, orderId);
-        return resultGeekQ;
+        return true;
     }
 
 
@@ -422,7 +422,7 @@ public class MiaoShaServiceImpl implements MiaoshaService {
     }
 
     @Transactional
-    public ResultGeekQ<Long> cancelCompleteOrder(MiaoShaUser user, long orderId) {
+    public boolean cancelCompleteOrder(MiaoShaUser user, long orderId) {
         ResultGeekQ<Long> resultGeekQ  = ResultGeekQ.build();
         log.info("start tcc completeOrder cancel, user:{}, orderId:{}", user, orderId);
         ResultGeekQ<OrderInfoVo> orderInfo = orderService.getOrderById(orderId);
@@ -434,7 +434,7 @@ public class MiaoShaServiceImpl implements MiaoshaService {
             orderInfoUpdate.setStatus(OrderStatus.ORDER_PYA_CANCEL.getCode());
             orderInfoDao.updateByPrimaryKeySelective(orderInfoUpdate);
         }
-        return resultGeekQ;
+        return true;
     }
 
     private MiaoShaOrder get(List<MiaoShaOrder> orders, Long userId) {
