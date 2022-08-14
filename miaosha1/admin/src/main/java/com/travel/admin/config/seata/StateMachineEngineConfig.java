@@ -35,7 +35,7 @@ public class StateMachineEngineConfig{
 
     @Bean
     public ProcessCtrlStateMachineEngine stateMachineEngine(){
-        ProcessCtrlStateMachineEngine proPlatformTransactionManagercessCtrlStateMachineEngine = new ProcessCtrlStateMachineEngine();
+        ProcessCtrlStateMachineEngine processCtrlStateMachineEngine = new ProcessCtrlStateMachineEngine();
         processCtrlStateMachineEngine.setStateMachineConfig(dbStateMachineConfig());
         return processCtrlStateMachineEngine;
     }
